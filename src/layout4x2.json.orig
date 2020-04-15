@@ -1,0 +1,385 @@
+{
+  "title": "Licht Esszimmer",
+  "tilechains": [
+    {
+      "name": "tilechain-1",
+      "address": "localhost",
+      "port": 8192
+    }
+  ],
+  "rows": [
+    {
+      "name": "row-1",
+      "widgetstacks": [
+        {
+          "name": "stack-1",
+          "context": "Dimmer",
+          "label": "Decke",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "defaultValue": 0,
+          "color": "lightgreen",
+          "widgets": [
+            {
+              "name": "widget-1",
+              "type": "SLIDER"
+            },
+            {
+              "name": "tcwidget-1",
+              "tilechain": "tilechain-1",
+              "identifier": "8E.1.1.1"
+            }
+          ]
+        },
+        {
+          "name": "stack-2",
+          "context": "Dimmer",
+          "label": "Decke Spot",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "defaultValue": 0,
+          "color": "lightgreen",
+          "widgets": [
+            {
+              "name": "widget-2",
+              "type": "SLIDER"
+            },
+            {
+              "name": "tcwidget-2",
+              "tilechain": "tilechain-1",
+              "identifier": "8E.1.1.2"
+            }
+          ]
+        },
+        {
+          "name": "stack-3",
+          "context": "Dimmer",
+          "label": "Stehlampe",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": true,
+          "color": "lightgreen",
+          "widgets": [
+            {
+              "name": "widget-3",
+              "type": "SLIDER"
+            },
+            {
+              "name": "tcwidget-3",
+              "tilechain": "tilechain-1",
+              "identifier": "8E.1.1.3"
+            }
+          ]
+        },
+        {
+          "name": "stack-4",
+          "context": "Dimmer",
+          "label": "Tischlampe",
+          "values": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E"
+          ],
+          "defaultValue": "A",
+          "color": "lightgreen",
+          "widgets": [
+            {
+              "name": "widget-4",
+              "type": "SLIDER"
+            },
+            {
+              "name": "tcwidget-4",
+              "tilechain": "tilechain-1",
+              "identifier": "8E.1.1.4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "row-2",
+      "widgetstacks": [
+        {
+          "name": "stack-5",
+          "context": "Schalter",
+          "label": "Decke",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": false,
+          "color": "lightgreen",
+          "widgets": [
+            {
+              "name": "widget-5",
+              "type": "TOGGLE"
+            },
+            {
+              "name": "tcwidget-5",
+              "tilechain": "tilechain-1",
+              "identifier": "8E.1.2.1"
+            }
+          ]
+        },
+        {
+          "name": "stack-6",
+          "context": "Schalter",
+          "label": "Decke Spot",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": false,
+          "color": "lightgreen",
+          "widgets": [
+            {
+              "name": "widget-6",
+              "type": "TOGGLE"
+            },
+            {
+              "name": "tcwidget-6",
+              "tilechain": "tilechain-1",
+              "identifier": "8E.1.2.2"
+            }
+          ]
+        },
+        {
+          "name": "stack-7",
+          "context": "Schalter",
+          "label": "Stehlampe",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": false,
+          "color": "lightgreen",
+          "widgets": [
+            {
+              "name": "widget-7",
+              "type": "TOGGLE"
+            },
+            {
+              "name": "tcwidget-7",
+              "tilechain": "tilechain-1",
+              "identifier": "8E.1.2.3"
+            }
+          ]
+        },
+        {
+          "name": "stack-8",
+          "context": "Schalter",
+          "label": "Tischlampe",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": false,
+          "color": "lightgreen",
+          "widgets": [
+            {
+              "name": "widget-8",
+              "type": "TOGGLE"
+            },
+            {
+              "name": "tcwidget-8",
+              "tilechain": "tilechain-1",
+              "identifier": "8E.1.2.4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "row-3",
+      "widgetstacks": [
+        {
+          "name": "stack-9",
+          "context": "",
+          "label": "Wohnzimmer",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": false,
+          "color": "lightgreen",
+          "widgets": [
+            {
+              "name": "widget-9",
+              "type": "BUTTON"
+            },
+            {
+              "name": "tcwidget-9",
+              "tilechain": "tilechain-1",
+              "identifier": "8B.1.1.1"
+            }
+          ]
+        },
+        {
+          "name": "stack-10",
+          "context": "",
+          "label": "Esszimmer",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": false,
+          "color": "green",
+          "widgets": [
+            {
+              "name": "widget-10",
+              "type": "BUTTON"
+            },
+            {
+              "name": "tcwidget-10",
+              "tilechain": "tilechain-1",
+              "identifier": "8B.1.1.2"
+            }
+          ]
+        },
+        {
+          "name": "stack-11",
+          "context": "",
+          "label": "Küche",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": false,
+          "color": "lightgreen",
+          "widgets": [
+            {
+              "name": "widget-11",
+              "type": "BUTTON"
+            },
+            {
+              "name": "tcwidget-11",
+              "tilechain": "tilechain-1",
+              "identifier": "8B.1.1.3"
+            }
+          ]
+        },
+        {
+          "name": "stack-12",
+          "context": "",
+          "label": "Flur",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": false,
+          "color": "lightgreen",
+          "widgets": [
+            {
+              "name": "widget-12",
+              "type": "BUTTON"
+            },
+            {
+              "name": "tcwidget-12",
+              "tilechain": "tilechain-1",
+              "identifier": "8B.1.1.4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "row-4",
+      "widgetstacks": [
+        {
+          "name": "stack-13",
+          "context": "",
+          "label": "Licht",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": false,
+          "color": "green",
+          "widgets": [
+            {
+              "name": "widget-13",
+              "type": "BUTTON"
+            },
+            {
+              "name": "tcwidget-13",
+              "tilechain": "tilechain-1",
+              "identifier": "8B.1.2.1"
+            }
+          ]
+        },
+        {
+          "name": "stack-14",
+          "context": "",
+          "label": "Rollläden",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": false,
+          "color": "orange",
+          "widgets": [
+            {
+              "name": "widget-14",
+              "type": "BUTTON"
+            },
+            {
+              "name": "tcwidget-14",
+              "tilechain": "tilechain-1",
+              "identifier": "8B.1.2.2"
+            }
+          ]
+        },
+        {
+          "name": "stack-15",
+          "context": "",
+          "label": "Temperatur",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": false,
+          "color": "red",
+          "widgets": [
+            {
+              "name": "widget-15",
+              "type": "BUTTON"
+            },
+            {
+              "name": "tcwidget-15",
+              "tilechain": "tilechain-1",
+              "identifier": "8B.1.2.3"
+            }
+          ]
+        },
+        {
+          "name": "stack-16",
+          "context": "",
+          "label": "Audio/TV",
+          "values": [
+            true,
+            false
+          ],
+          "defaultValue": false,
+          "color": "purple",
+          "widgets": [
+            {
+              "name": "widget-16",
+              "type": "BUTTON"
+            },
+            {
+              "name": "tcwidget-16",
+              "tilechain": "tilechain-1",
+              "identifier": "8B.1.2.4"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

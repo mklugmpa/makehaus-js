@@ -1,0 +1,32 @@
+# NodeJS specific
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+build/Release
+build/
+dist/
+undefined/
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Logs
+logs
+*.log
+test/*.log
+
+# Optional npm cache directory
+.npm
+
+# Testing
+.nyc_output
+
+# Output of 'npm pack'
+*.tgz
+
+# Dotenv environment variables file
+.env
+.env.test
+
+# MacOS UI
+.DS_Store

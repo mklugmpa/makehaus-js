@@ -1,0 +1,85 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "diagnostics",
+      "args": [],
+      "program": "${workspaceFolder}/examples/diagnostics.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "autoanimate",
+      "args": [],
+      "program": "${workspaceFolder}/examples/auto-animate.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "example-makehaus-full-butled8",
+      "args": [],
+      "program": "${workspaceFolder}/examples/makehaus-full-phone.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "example-makehaus-full-tablet",
+      "args": [],
+      "program": "${workspaceFolder}/examples/makehaus-full-tablet.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "example-makehaus-simple-butled8",
+      "args": [],
+      "program": "${workspaceFolder}/examples/makehaus-simple-butled8.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "example-makehaus-simple-butled12",
+      "args": [],
+      "program": "${workspaceFolder}/examples/makehaus-simple-butled12.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "example-makehaus-simple-encoder8-turn",
+      "args": [],
+      "program": "${workspaceFolder}/examples/makehaus-simple-encoder8-turn.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "example-makehaus-simple-encoder12-press",
+      "args": [],
+      "program": "${workspaceFolder}/examples/makehaus-simple-encoder12-press.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "example-makehaus-simple-motorfader4",
+      "args": [],
+      "program": "${workspaceFolder}/examples/makehaus-simple-motorfader4.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "button-api",
+      "args": [],
+      "program": "${workspaceFolder}/examples/button-api.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "motorfader-api",
+      "args": [],
+      "program": "${workspaceFolder}/examples/motorfader-api.js"
+    }
+  ]
+}
