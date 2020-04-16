@@ -3,7 +3,7 @@
     "tilechains": [
         {
             "name": "tilechain-1",
-            "address": "localhost",
+            "address": "10.0.0.4",
             "port": 8192
         }
     ],
