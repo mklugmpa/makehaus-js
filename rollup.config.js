@@ -1,4 +1,5 @@
 import typescript from 'rollup-plugin-typescript2';
+import copy from 'rollup-plugin-copy';
 import pkg from './package.json';
 export default {
   input: 'src/index.ts',
@@ -16,6 +17,9 @@ export default {
   plugins: [
     typescript({
       typescript: require('typescript'),
+    }),
+    copy({
+      targets: [{ src: 'webapp/**/*', dest: 'dist/webapp' }],
     }),
   ],
 };

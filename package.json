@@ -1,6 +1,6 @@
 {
   "name": "@makeproaudio/makehaus-js",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "A minimalistic nodejs client to speak to the MakeProAudio Tiles Hub",
   "author": "MakeProAudio GmbH",
   "license": "AGPL",
@@ -54,6 +54,7 @@
     "mocha": "^6.2.2",
     "nodemon": "^1.19.4",
     "rollup": "^1.31.1",
+    "rollup-plugin-copy": "^3.3.0",
     "ts-node": "^8.5.4",
     "tslint": "^5.20.1",
     "typescript": "^3.7.2"
@@ -68,7 +69,7 @@
     "posttest": "npm run check",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
-    "build": "rollup -c && echo 'copying webapp' && sleep 5 && cp -R webapp dist",
+    "build": "rollup -c",
     "diagnostics": "cd examples && node diagnostics",
     "autoanimate": "cd examples && node auto-animate",
     "encoderevents": "cd examples && node encoder-events",
