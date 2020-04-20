@@ -46,6 +46,7 @@ export class StackBase implements Stack {
   sync(): void {
     if (this._parameter) {
       this.setColor(this.color());
+      this.setAbsoluteValue(this.value());
     }
   }
 
@@ -308,7 +309,7 @@ export class StackBase implements Stack {
 
   setAbsoluteValue(val: string | number): void {
     if (this._parameter) {
-      this._parameter.update(val);
+      this._parameter.update(val, true);
     }
   }
 

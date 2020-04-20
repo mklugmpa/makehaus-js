@@ -7,13 +7,26 @@ import { EventEmitter } from 'events';
 import { TCWidget } from '../tcwidget/tcwidget-base';
 import { TileFader4 } from './api-fader';
 import { TileTextLcdDisplayDual } from './api-textlcddisplay';
+import { Stacks } from '../stack/stacks';
+import { StackBase } from '../stack/stack';
 
 export class Hub extends EventEmitter {
   private subject = new ReplaySubject<ControlEvent>();
   private tiles: TileBase<TCWidget>[] = [];
+  private inited: boolean = false;
   private dataCallback = (json: any) => {
     let what;
     if (json.msg_type === MessageType.CHAININIT) {
+      if (this.inited === true) {
+        console.log('Tile Chain was reconnected to hub. Avoiding reinitialization');
+        Stacks.getAll().forEach(stack => {
+          const stackbase = stack as StackBase;
+          stackbase.sync();
+        });
+        return;
+      }
+      console.log('Found a Tile Chain connected to hub.');
+      this.inited = true;
       what = json as ChainInit;
       let tile: TileBase<TCWidget>;
       what.board_infos.forEach(boardInfo => {
@@ -47,6 +60,8 @@ export class Hub extends EventEmitter {
     } else if (json.msg_type === MessageType.EVENT) {
       what = json as ControlEvent;
       this.subject.next(what);
+    } else if (json.msg_type === MessageType.CHAINEXIT) {
+      console.log('Tile Chain was disconnected from Hub');
     }
   };
 
@@ -61,6 +76,7 @@ export class Hub extends EventEmitter {
 
 export const MessageType = {
   CHAININIT: 'chain-init',
+  CHAINEXIT: 'chain-exit',
   EVENT: 'event',
 };
 
