@@ -4,6 +4,21 @@
 
 The Tiles API Client (nodejs) is a minimalistic nodejs client to speak to the MakeProAudio Tiles Hub. Using this client API, you can speak to **Tile Chains** connected to a **Tiles Hub** running on a local or remote computer. Click [here](here) for more information on Tiles Hub. Currently you can only speak to a single Tile Chain. Multiplicity of Tile Chains will be supported later.
 
+## Identifying COM Port On Your OS
+
+To identify the COM Port on which your Tiles are connected, you'd run:
+
+```
+//Windows
+mode (typically returns something similar to COM3)
+
+//Mac OS
+ls -lrt /dev/tty* (typically returns something similar to /dev/tty.usbmodem14101)
+
+//Linux (tested on Raspberry Pi 3+)
+ls -lrt /dev/tty* (typically returns something similar to /dev/ttyACM0)
+```
+
 ## Running The Hub
 
 Find out the `COM` port you've connected your Tile Chain to. Using the appropriate start script relevant to your OS, run the following command. For example, if on Windows, the relevant COM port is COM23 and on Mac, the relevant COM port is /dev/tty.usbmodem1411201, you'd run:
@@ -12,7 +27,7 @@ Find out the `COM` port you've connected your Tile Chain to. Using the appropria
 //Windows
 start.bat COM23
 
-//Mac
+//Mac OS
 sh start /dev/tty.usbmodem1411201
 
 //Linux (tested on Raspberry Pi 3+)
@@ -25,7 +40,7 @@ sh start /dev/tty.usbmodem1411201
 
 In order to install the package, in your nodejs environment run:
 
-`npm i tiles-api-client-nodejs`
+`npm i @makeproaudio/makehaus-js`
 
 > You'll need a node version (>=6.0) in order to run the Tiles API Client.
 
@@ -34,7 +49,7 @@ In order to install the package, in your nodejs environment run:
 Ensure that the Tiles Hub is running before you start using the client. Once you know the `host` and `port` of the Tiles Hub, use the following command to establish a connection:
 
 ```javascript
-const { hub } = require('tiles-api-client-nodejs');
+const { hub } = require('@makeproaudio/makehaus-js');
 hub.init('localhost', 8192);
 ```
 
@@ -43,7 +58,7 @@ hub.init('localhost', 8192);
 `hub` is an `EventEmitter`. You can register to `Tiles` being found on the Hub. For example, if you're looking to work with a 12 Button Tile
 
 ```javascript
-const { hub, Tile } = require('tiles-api-client-nodejs');
+const { hub, Tile } = require('@makeproaudio/makehaus-js');
 hub.on(Tile.LEDBUTTON12, tile => {
    console.log('A new Led Button 12 tile was found. There may be more tiles on the chain!')
 }
@@ -68,7 +83,7 @@ const widget = tile.widgets[0].widgetId;
 `widget` is an `EventEmitter`. Depending on the type of `tile`, you can register to `Widget` events. For example, if you want to listen to Button _Pressed_ and _Released_ events:
 
 ```javascript
-const { hub, Tile, LedButtonEvents } = require('tiles-api-client-nodejs');
+const { hub, Tile, LedButtonEvents } = require('@makeproaudio/makehaus-js');
 hub.on(Tile.LEDBUTTON12, tile => {
   tile.widgets.forEach(w => {
     w.on(LedButtonEvents.PRESSED, button => {
@@ -103,7 +118,7 @@ Some Widgets have extra functions. Here is a list of these functions by Widget t
 A simple `Diagnostics` module has been added to get you started out of the box. If started, each Event from each Widget for each Tile will be logged to the console.
 
 ```javascript
-const { hub, diagnostics } = require('tiles-api-client-nodejs');
+const { hub, diagnostics } = require('@makeproaudio/makehaus-js');
 const ENABLEDIAGNOSTICS = true;
 
 hub.init('localhost', 8192);
@@ -120,7 +135,7 @@ You can do pretty cool things with Tiles! Depending on what is present on your C
 2. Turning Encoders right and left will move Motor Faders up and down
 
 ```javascript
-const { hub, autoAnimate } = require('tiles-api-client-nodejs');
+const { hub, autoAnimate } = require('@makeproaudio/makehaus-js');
 const AUTOANIMATE = true;
 
 hub.init('localhost', 8192);
@@ -300,7 +315,7 @@ Instead, if you wanted the `Value` to be updated when the `Encoder` was `PRESSED
 Now in code, to bind to `Value` changes of this `Stack`, create a `Parameter` and bind to it in the following manner:
 
 ```javascript
-const { Stacks } = require('tiles-api-client-nodejs');
+const { Stacks } = require('@makeproaudio/makehaus-js');
 const { Parameters } = require('@makeproaudio/parameters');
 const stack = Stacks.get('stack-1');
 const param = Parameters.newParameter('maker', stack.name());
