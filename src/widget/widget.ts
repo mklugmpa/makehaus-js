@@ -3,6 +3,8 @@ import { StackBase, StackEvent } from '../stack/stack';
 import { TCWidget } from '../tcwidget/tcwidget-base';
 import { UI } from '../ui/ui';
 
+/* A Widget here is an abstract representation for both hardware and software widgets.
+It is not necessary that every Widget implementation will suport each of the properties below.*/
 export interface Widget {
   name(): string;
   setName(name: string): void;
@@ -18,12 +20,14 @@ export interface Widget {
   absoluteValue(): any;
 }
 
+/* The interface which represents the abstract Widget on the software UI */
 export interface UIWidget {
   name: string;
   type: WidgetType;
   weight: number;
 }
 
+/* This base class does a lot of the heavy lifting in the Stacks API.*/
 export class WidgetBase extends EventEmitter implements Widget {
   constructor(name: string, type: WidgetType, weight?: number) {
     super();
@@ -38,9 +42,17 @@ export class WidgetBase extends EventEmitter implements Widget {
   private _type: WidgetType;
   private _touchedState: boolean;
   private _pressedState: boolean;
+
+  /* Weight is used to define the width of the widget in the UI. */
   private _weight: number | undefined;
+
+  /* Valid if a hardware widget was used in the creation of this abstract widget */
   private _derivedFromHardware: boolean = false;
+
+  /* Valid if a hardware widget was used in the creation of this abstract widget */
   private _tcWidget: TCWidget | undefined;
+
+  /* The stack that this widget is a part of */
   private _stack: StackBase | undefined;
 
   absoluteValue(): any {
@@ -61,9 +73,15 @@ export class WidgetBase extends EventEmitter implements Widget {
     this._stack = stack;
   }
 
+  /* The on___ methods are called by the parser (src/parser/parser.ts) and are relevant for only the hardware widgets
+   * Not every callback is valid for every type of hardware widget */
+
+  /* Depicts a change in TOUCHED state */
   onTouched(state: boolean): void {
+    /* Ensure that this widget is part of a Stack*/
     if (this._stack) {
       this._touchedState = state;
+      /* Generate a WidgetEvent and let the Stack relay the information */
       const evt: WidgetEvent = {
         kind: 'widgetevent',
         source: this._name,
@@ -76,6 +94,8 @@ export class WidgetBase extends EventEmitter implements Widget {
     }
   }
 
+  /* Depicts a change in value representation of the widget, when the change is relative
+   * For example - encoder turned left of right is a relative change */
   onRelativeChange(val: any): void {
     if (this._stack) {
       const evt: WidgetEvent = {
@@ -90,6 +110,8 @@ export class WidgetBase extends EventEmitter implements Widget {
     }
   }
 
+  /* Depicts a change in value representation of the widget, when the change is absolute
+   * For example - fader being set to a particular value is an absolute change */
   onAbsoluteChange(val: any): void {
     if (this._stack) {
       const evt: WidgetEvent = {
@@ -104,6 +126,7 @@ export class WidgetBase extends EventEmitter implements Widget {
     }
   }
 
+  /* Depicts a change in the PRESSED state */
   onPressed(state: boolean): void {
     if (this._stack) {
       this._pressedState = state;
@@ -120,6 +143,7 @@ export class WidgetBase extends EventEmitter implements Widget {
   }
 
   setPressedState(evt: WidgetEvent): void {
+    /* If the Widget was derived from hardware, don't do anything, otherwise forward the event as is to the UI ƒ*/
     if (this._derivedFromHardware) {
     } else {
       UI.receiveEvent(evt);
@@ -175,8 +199,10 @@ export class WidgetBase extends EventEmitter implements Widget {
   }
 
   setType(type: WidgetType): void {
+    /* Only UI Widgets can change their WidgetType. */
     if (this._derivedFromHardware) throw Error('cannot change type for a tilechain widget');
     if (!UIWidgetTypes.includes(type)) throw Error('cannot change type to a non-UI widget type');
+    /* Can't update the type if the requested type is the same as the existing one */
     if (this._type === type) return;
     if (this._stack) {
       this._type = type;
@@ -188,6 +214,7 @@ export class WidgetBase extends EventEmitter implements Widget {
         type: WidgetEventType.TYPECHANGE,
         val: type,
       };
+      /* Tell the UI to receive this event */
       UI.receiveEvent(evt);
     }
   }
@@ -203,6 +230,7 @@ export enum WidgetSelectedState {
   UNSELECTED,
 }
 
+/* Set of supported Widget Events which have a resemblance in the UI */
 export enum WidgetEventType {
   TOUCH = 'TOUCH',
   PRESS = 'PRESS',
@@ -211,6 +239,7 @@ export enum WidgetEventType {
   TYPECHANGE = 'TYPECHANGE',
 }
 
+/* This interface is used to send messages to the UI */
 export interface WidgetEvent {
   kind: string;
   source: string;
@@ -220,6 +249,7 @@ export interface WidgetEvent {
   val: string | boolean | number;
 }
 
+/* Supported set of Widgets in the platform. Only the type of UI Widget can be changed */
 export enum WidgetType {
   SELECTOR_VERTICAL = 'SELECTOR_VERTICAL',
   SELECTOR_HORIZONTAL = 'SELECTOR_HORIZONTAL',
@@ -234,6 +264,7 @@ export enum WidgetType {
   EMPTY = 'EMPTY',
 }
 
+/* A helper object to filter out the Widget Types which can be displayed on the UI */
 export const UIWidgetTypes: WidgetType[] = [
   WidgetType.BUTTON,
   WidgetType.TOGGLE,

@@ -35,14 +35,21 @@ class UIManager {
   };
 
   constructor() {
+    /* create an express application to be able to open a websocket.*/
     this.app = express();
     this.app.use(cors());
     this.app.options('*', cors());
+
+    /* Create a Server application */
     this.server = createServer(this.app);
+
+    /* Open a websocket with the server just created */
     this.io = socketio(this.server);
   }
 
-  getUILayoutJSON = (): UILayout => {
+  /* Go through the Rows/Stacks/Widgets hierarchy and construct a corresponding hierarchy which can be interpreted by the UI
+  This is a heavy lifting, setup time only function */
+  private getUILayoutJSON = (): UILayout => {
     let maxInRow = -1;
     let uiLayout: UILayout = { title: this.title, rows: [] };
     Array.from(Rows.getAll()).forEach(row => {
@@ -78,30 +85,38 @@ class UIManager {
     return uiLayout;
   };
 
+  /* Register a listener on the Port specified and listen on topics. */
   private listen(port: number): void {
     this.server.listen(port, '0.0.0.0', () => {
       console.log(`Server running on port ${port}. Specify this in your UI as required.`);
     });
 
+    /* Disallow using the application for any standard HTTP purposes */
     this.app.get('/', (req, res) => {
       res.send().status(401);
     });
 
+    /* Register a connection listener */
     this.io.on('connect', (socket: any) => {
       this.socket = socket;
       console.log('Connected client on port %s.', port);
 
+      /* A client willing to speak to this server will speak on the 'client' topic */
       socket.on('client', () => {
         console.log(`Received client request`);
         this.io.sockets.emit('client-ready', 1);
         console.log('Sent client response: 1');
 
+        /* Use the 'data' topic for standard events related communication */
         socket.on('data', (clientId: number) => {
           console.log('Received layout request from client with ID=%d.', clientId);
           console.log(this.getUILayoutJSON());
           this.io.sockets.emit('data', this.getUILayoutJSON());
         });
 
+        /* Typically, communication is directed from the server to the client in all but one use case:
+         * Software buttons can implement specific functionality. To listen to a software UI Button being pressed
+         * ,use the 'tx' topic */
         socket.on('tx', data => {
           console.log(JSON.stringify(data));
           const widget: WidgetBase | undefined = Widgets.get(data.widget.name) as WidgetBase;

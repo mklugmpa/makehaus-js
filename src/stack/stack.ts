@@ -189,10 +189,15 @@ export class StackBase implements Stack {
     });
   }
 
+  /* One of the Stack's responsibilities is to multiplex the communication between the hardware and the software widgets
+   * This function is dedicated to incoming events from the hardware */
   onWidgetEvent(evt: WidgetEvent): void {
     switch (evt.type) {
+      /* Hardware widget was Pressed */
       case WidgetEventType.PRESS:
+        /* For every widget part of this stack, tell the widget that its PRESSED state was changed */
         this.widgets().map(w => (w as WidgetBase).setPressedState(evt));
+        /* Depending on the application logic, update the value of the parameter */
         if (evt.val === false) {
           if (this.parameter()) {
             this.parameter()!.updateCyclic();
@@ -200,15 +205,18 @@ export class StackBase implements Stack {
         }
         break;
       case WidgetEventType.TOUCH:
+        /* For every widget part of this stack, tell the widget that its TOUCH state was changed */
         this.widgets().map(w => (w as WidgetBase).setTouchedState(evt));
         break;
       case WidgetEventType.CHANGE_RELATIVE:
+        /* Depending on the application logic, update the value of the parameter */
         if (this.parameter()) {
           if (evt.val >= 0) this.parameter()!.updateNext(Math.abs(evt.val as number));
           if (evt.val < 0) this.parameter()!.updatePrevious(Math.abs(evt.val as number));
         }
         break;
       case WidgetEventType.CHANGE_ABSOLUTE:
+        /* Depending on the application logic, update the value of the parameter */
         if (this.parameter()) this.parameter()!.updateRanged(evt.val as number);
         break;
       default:
@@ -220,6 +228,7 @@ export class StackBase implements Stack {
     return this._name;
   }
 
+  /* Add a Widget object to this stack */
   addWidget(widget: Widget): void {
     if (!this._widgets.get(widget.name())) {
       const wb: WidgetBase = widget as WidgetBase;
@@ -233,6 +242,7 @@ export class StackBase implements Stack {
   removeWidget(widget: Widget): void;
   removeWidget(name: string): void;
 
+  /* Remove a Widget object from this stack */
   removeWidget(widget: any) {
     if (this._widgets.get(widget.name())) {
       this._widgets.delete(widget.name());

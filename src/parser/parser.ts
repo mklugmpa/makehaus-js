@@ -15,21 +15,30 @@ import { Parameters } from '@makeproaudio/parameters-js';
 
 class Layouter {
   /* Should be semaphore'd or countdown latched. Later*/
+
+  /* Pass a Layout JSON string along with the port on which to start communicating with the MakeHaus Web UI
+   * Since this operation is asynchronous, it accepts a callback function to report back to when the initialization
+   * of the UI Widgets has been completed */
   getUIWidgets = (json: string, callback: () => void, websocketPort: number) => {
     const layout = json as Layout;
     if (layout.title) {
       UI.setTitle(layout.title);
     }
+    /* Create the Rows/Stacks/UIWidgets object hierarchy */
     this.spawnRowsStacksUIWidgets(layout);
     callback();
+    /* Dirty hack to wait for a little while before accepting messages from the UI */
     setTimeout(() => UI.init(websocketPort), 3000);
   };
 
+  /* Pass a Layout JSON string and a callback function to asynchronously spawn TC Widgets when the remote
+   * hub comes online */
   getTCWidgets = (json: string, callback: () => void) => {
     const layout = json as Layout;
     this.spawnTCWidgetsWhenAvailable(layout, callback);
   };
 
+  /* Create the TCWidget object hierarchy */
   spawnTCWidgetsWhenAvailable = (layout: Layout, callback: () => void) => {
     if (layout.rows) {
       layout.rows.forEach((r: RowModel) => {
@@ -54,11 +63,13 @@ class Layouter {
   };
 
   spawnForStack = (s: StackModel, stack: StackBase, layout: Layout) => {
-    /* do better validation here. Later on */
+    /* Create a new parameter for this Stack.
+     *Do better validation here. Later on */
     let param: Parameter = Parameters.newParameter('', stack.name());
     if (s.max !== undefined && s.min !== undefined && s.step !== undefined) {
       param.updateType({ min: s.min, max: s.max, step: s.step, value: s.defaultValue, type: ParameterType.NUMBER });
     } else if (s.values) {
+      /* Depending on the values mentioned in the layout*/
       switch (typeof s.values[0]) {
         case 'number':
           param.updateType({ values: s.values, value: s.defaultValue, type: ParameterType.NUMBER_ARRAY });
@@ -125,9 +136,12 @@ class Layouter {
     }
   };
 
+  /* Here, the parser acts as an internal listener to TCWidget Events and maps them to abstract Widget API calls.
+   * For every TCWidget created, bind the TCWidget event to the abstract Widget function */
   bindTCWidgetEvents = (widget: WidgetBase, tcw: TCWidget, stack: StackBase, evt: WidgetModelEvent) => {
     if (tcw.type() === WidgetType.ENCODER) {
       const enc: Encoder = tcw as Encoder;
+      /* For example, if an encoder was touched, tell the Widget wrapper of this TC Widget that it was touched. */
       enc.on(EncoderEvents.TOUCHED, () => {
         widget.onTouched(true);
       });

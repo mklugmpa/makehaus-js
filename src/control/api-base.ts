@@ -12,6 +12,8 @@ abstract class ControlEventProcessor {
   evtSubject: any;
 }
 
+/* This is the abstract base class for all Tile types
+ * Each Board Type is represented by its own class in the TileBase hierarchy.*/
 export abstract class TileBase<T extends TCWidget> extends ControlEventProcessor {
   private _tileIndex: number;
   private _chainId: string;

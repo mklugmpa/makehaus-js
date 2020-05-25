@@ -1,9 +1,6 @@
 import { Widget, WidgetBase, WidgetType } from './widget';
 import { TCWidget } from '../tcwidget/tcwidget-base';
 import { EventEmitter } from 'events';
-import { UI } from '../ui/ui';
-import { TileChainWidgetManager } from '../tcwidget/tcwidget-manager';
-import { eventNames } from 'cluster';
 
 class WidgetRegistry {
   private widgets: Map<string, Widget> = new Map();

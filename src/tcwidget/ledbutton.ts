@@ -19,6 +19,7 @@ export class LedButton extends TCWidget {
 
   setColor(color: string) {
     this.color = color;
+    /* Create the Control Event to change the color type and pass it to the event stream for processing */
     this.evtSubject.next({
       cmd: TileButLedCommands.COLOUR,
       com: TileButLedComponents.LED,
@@ -31,6 +32,7 @@ export class LedButton extends TCWidget {
     });
   }
 
+  /* A wrapper method for updating the color of an LED using the HSL convention */
   setHsl(hue: number, saturation: number, lightness: number) {
     if (hue < 0 || hue > 360 || saturation < 0 || saturation > 1 || lightness < 0 || lightness > 1) {
       console.log('received invalid arguments for hsl');

@@ -11,13 +11,20 @@ import { Stacks } from '../stack/stacks';
 import { StackBase } from '../stack/stack';
 
 export class Hub extends EventEmitter {
+  /* Create a Stream where the type of messages we will be handling is of type ControlEvent */
   private subject = new ReplaySubject<ControlEvent>();
+
+  /* The TileBase class is the abstract base class for all Tile types. */
   private tiles: TileBase<TCWidget>[] = [];
   private inited: boolean = false;
+
   private dataCallback = (json: any) => {
     let what;
+
+    /* there may be different types of messages coming in from the hub. Refer to the MessageType enum for a complete list*/
     if (json.msg_type === MessageType.CHAININIT) {
       if (this.inited === true) {
+        /* Check whether the hub proxy has already been inited and avoid reinitialization */
         console.log('Tile Chain was reconnected to hub. Avoiding reinitialization');
         Stacks.getAll().forEach(stack => {
           const stackbase = stack as StackBase;
@@ -25,10 +32,15 @@ export class Hub extends EventEmitter {
         });
         return;
       }
+
+      /* Currently supports only a single Tile Chain connected to the Hub */
       console.log('Found a Tile Chain connected to hub.');
       this.inited = true;
       what = json as ChainInit;
       let tile: TileBase<TCWidget>;
+
+      /* Depending on the board info, create different base objects. Refer to TileBase and its
+       * derivate classes for further information */
       what.board_infos.forEach(boardInfo => {
         switch (boardInfo.board_type) {
           case BoardType.TILEBUTLED12:
@@ -52,6 +64,8 @@ export class Hub extends EventEmitter {
           default:
             break;
         }
+
+        /* cache the tile and forward the information that a new tile was discovered via events */
         if (tile) {
           this.tiles.push(tile);
           this.emit(tile.tileType().toString(), tile);
@@ -59,17 +73,25 @@ export class Hub extends EventEmitter {
       });
     } else if (json.msg_type === MessageType.EVENT) {
       what = json as ControlEvent;
+
+      /* If the message type is an EVENT, pass the message to the event Stream to process */
       this.subject.next(what);
     } else if (json.msg_type === MessageType.CHAINEXIT) {
+      /* Don't do anything special in the disconnect section. This is currently matching the implementation on the Tiles Hub*/
       console.log('Tile Chain was disconnected from Hub');
     }
   };
 
   init = (host: string, port: number) => {
+    /* Start listening to the client for events. */
     client.start(host, port);
+
+    /* Register event handlers for different event types on the server. */
     client.on('error', (e: any) => console.log('error %s', e));
     client.on('connect', () => console.log('Connection established to hub'));
     client.on('close', (e: any) => console.log('close %s', e));
+
+    /* register a data callback which is used as a high speed lane for all significant events */
     client.on('data', (json: any) => this.dataCallback(json));
   };
 }
