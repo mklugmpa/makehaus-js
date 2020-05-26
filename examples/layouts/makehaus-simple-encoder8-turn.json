@@ -24,7 +24,7 @@
                     "widgets": [
                         {
                             "name": "slider",
-                            "type": "SLIDER_HORIZONTAL"
+                            "type": "FADER"
                         },
                         {
                             "name": "encoder",

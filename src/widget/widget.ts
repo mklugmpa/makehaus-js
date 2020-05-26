@@ -261,6 +261,7 @@ export enum WidgetType {
   ENCODER = 'ENCODER',
   MOTORFADER = 'MOTORFADER',
   TEXTLCDDISPLAY = 'TEXTLCDDISPLAY',
+  FADER = 'FADER',
   EMPTY = 'EMPTY',
 }
 
@@ -272,5 +273,6 @@ export const UIWidgetTypes: WidgetType[] = [
   WidgetType.SLIDER_HORIZONTAL,
   WidgetType.SELECTOR_VERTICAL,
   WidgetType.SELECTOR_HORIZONTAL,
+  WidgetType.FADER,
   WidgetType.EMPTY,
 ];
