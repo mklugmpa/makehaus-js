@@ -1,5 +1,5 @@
 import { Widget, UIWidget, WidgetBase, WidgetEventType, WidgetEvent, WidgetType } from '../widget/widget';
-import { Parameter, ParameterTypeChangeRequest, ParameterTypeChangeRequestToken, ParameterType, ParameterChangeEvent } from '@makeproaudio/parameters-js';
+import { Parameter, ParameterBlueprint, ParameterTypeChangeRequestToken, ParameterType, ParameterChangeEvent } from '@makeproaudio/parameters-js';
 import _ from 'lodash';
 
 export interface Stack {
@@ -25,9 +25,8 @@ export interface Stack {
   /* helper function to all setType for each widget which belongs to this stack */
   setWidgetsType(type: WidgetType): void;
 
-  setParameterType(req: ParameterTypeChangeRequest): void;
-  bindTo(param: Parameter, callback: (parameterChangeEvent: ParameterChangeEvent<any>) => void): void;
-  bindFrom(param: Parameter, callback: (parameterChangeEvent: ParameterChangeEvent<any>) => void): void;
+  setParameterType(req: ParameterBlueprint): void;
+  bind(param: Parameter, callback: (parameterChangeEvent: ParameterChangeEvent<any>) => void): void;
 }
 
 export interface UIStack {
@@ -146,19 +145,17 @@ export class StackBase implements Stack {
     }
   }
 
-  setParameterType(req: ParameterTypeChangeRequest): void {
+  setParameterType(req: ParameterBlueprint): void {
     if (this._parameter) {
       this._parameter.updateType(req);
     }
   }
 
-  bindTo(param: Parameter, callback: (parameterChangeEvent: ParameterChangeEvent<any>) => void): void {
+  bind(param: Parameter, callback: (parameterChangeEvent: ParameterChangeEvent<any>) => void): void {
     if (this._parameter) {
       param.bindFrom(this._parameter, callback);
     }
   }
-
-  bindFrom(param: Parameter): void {}
 
   private _widgets: Map<string, Widget> = new Map();
   private _name: string;
@@ -266,7 +263,7 @@ export class StackBase implements Stack {
           type: StackEventType.VALUE,
           val: paramEvent.value,
         };
-        this.raiseUIEvent(evt);
+        this.raiseUIEvent(evt); 
       } else if (paramEvent.metadataUpdated) {
         const evt: StackEvent = {
           kind: 'stackevent',
@@ -366,4 +363,4 @@ export enum StackEventType {
   TYPECHANGE = 'TYPECHANGE',
 }
 
-export interface StackTypeChangeRequest extends ParameterTypeChangeRequest {}
+export interface StackTypeChangeRequest extends ParameterBlueprint {}

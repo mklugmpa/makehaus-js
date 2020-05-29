@@ -60,7 +60,7 @@ const animateSelectors = stacks => {
   /* tune into parameter value changes on the each of the primary selector stacks */
   stacks.primary.forEach(s => {
     const param = Parameters.newParameter('maker', s.name());
-    s.bindTo(param, evt => {
+    s.bind(param, evt => {
       if (evt.value !== undefined) {
         /* since the press event of the ui buttons has been subscribed to
          * in the layout json, updated values will be received here
@@ -87,7 +87,7 @@ const animateSelectors = stacks => {
    *tune into parameter value changes on the each of the secondary selector stacks */
   stacks.secondary.forEach(s => {
     const param = Parameters.newParameter('maker', s.name());
-    s.bindTo(param, evt => {
+    s.bind(param, evt => {
       if (evt.value !== undefined) {
         selectedSecondary = s;
         handleSelectedSecondary();

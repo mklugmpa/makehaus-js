@@ -61,7 +61,7 @@ function animateFunctionButtons(stacks) {
 
   stacks.forEach(stack => {
     const param = Parameters.newParameter('maker', stack.name());
-    stack.bindTo(param, evt => {
+    stack.bind(param, evt => {
       if (evt.value !== undefined) {
         rows([2, 3, 5]).forEach(row => {
           const rc = randomColor();
@@ -83,7 +83,7 @@ const animateOnOffButtons = stacks => {
       /* override colors in the layout json by initializing them all to off by default */
       s.setColor(colorOff);
       const param = Parameters.newParameter('maker', s.name());
-      s.bindTo(param, evt => {
+      s.bind(param, evt => {
         if (evt.value === 'ON') {
           s.setColor(colorOn);
         } else if (evt.value === 'OFF') {
@@ -140,7 +140,7 @@ const animateSelectors = stacks => {
   /* tune into parameter value changes on the each of the primary selector stacks */
   stacks.primary.forEach(s => {
     const param = Parameters.newParameter('maker', s.name());
-    s.bindTo(param, evt => {
+    s.bind(param, evt => {
       if (evt.value !== undefined) {
         /* since the press event of the ui buttons has been subscribed to
          * in the layout json, updated values will be received here
@@ -168,7 +168,7 @@ const animateSelectors = stacks => {
    *tune into parameter value changes on the each of the secondary selector stacks */
   stacks.secondary.forEach(s => {
     const param = Parameters.newParameter('maker', s.name());
-    s.bindTo(param, evt => {
+    s.bind(param, evt => {
       if (evt.value !== undefined) {
         selectedSecondary = s;
         handleSelectedSecondary();

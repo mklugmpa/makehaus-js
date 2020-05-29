@@ -319,7 +319,7 @@ const { Stacks } = require('@makeproaudio/makehaus-js');
 const { Parameters } = require('@makeproaudio/parameters');
 const stack = Stacks.get('stack-1');
 const param = Parameters.newParameter('maker', stack.name());
-param.bindTo(stack, evt => {
+stack.bindFrom(param, evt => {
   console.log(evt.value);
   // Update your MIDI value, your lamp's brightness or any other use case you can think of :)
 });

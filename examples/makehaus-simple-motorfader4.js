@@ -17,7 +17,7 @@ MakeHaus.init(
     const stack = Stacks.get('stack-1');
     /* Create a parameter. */
     const param = Parameters.newParameter('maker', stack.name());
-    stack.bindTo(param, evt => {
+    stack.bind(param, evt => {
       /* Make sure that the value is not undefined */
       if (evt.value !== undefined) {
         /* update the label to reflect the value */
