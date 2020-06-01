@@ -21,7 +21,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "example-makehaus-full-butled8",
+      "name": "example-makehaus-full-phone",
       "args": [],
       "program": "${workspaceFolder}/examples/makehaus-full-phone.js"
     },
@@ -31,6 +31,20 @@
       "name": "example-makehaus-full-tablet",
       "args": [],
       "program": "${workspaceFolder}/examples/makehaus-full-tablet.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "example-makehaus-parameters-phone",
+      "args": [],
+      "program": "${workspaceFolder}/examples/makehaus-parameters-phone.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "example-makehaus-parameters-tablet",
+      "args": [],
+      "program": "${workspaceFolder}/examples/makehaus-parameters-tablet.js"
     },
     {
       "type": "node",

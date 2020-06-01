@@ -118,7 +118,6 @@ class UIManager {
          * Software buttons can implement specific functionality. To listen to a software UI Button being pressed
          * ,use the 'tx' topic */
         socket.on('tx', data => {
-          console.log(JSON.stringify(data));
           const widget: WidgetBase | undefined = Widgets.get(data.widget.name) as WidgetBase;
           if (widget) {
             switch (widget.type()) {

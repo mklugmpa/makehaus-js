@@ -1,6 +1,6 @@
-import { Widget, UIWidget, WidgetBase, WidgetEventType, WidgetEvent, WidgetType } from '../widget/widget';
-import { Parameter, ParameterBlueprint, ParameterTypeChangeRequestToken, ParameterType, ParameterChangeEvent } from '@makeproaudio/parameters-js';
+import { Parameter, ParameterBlueprint, ParameterChangeEvent, ParameterType, ParameterTypeChangeRequestToken } from '@makeproaudio/parameters-js';
 import _ from 'lodash';
+import { UIWidget, Widget, WidgetBase, WidgetEvent, WidgetEventType, WidgetType } from '../widget/widget';
 
 export interface Stack {
   name(): string;
@@ -157,6 +157,10 @@ export class StackBase implements Stack {
     }
   }
 
+  unbind(param: Parameter) {
+    param.unbind();
+  }
+
   private _widgets: Map<string, Widget> = new Map();
   private _name: string;
   private _parameter: Parameter | undefined;
@@ -252,52 +256,58 @@ export class StackBase implements Stack {
     return Array.from(this._widgets.values());
   }
 
+  uiL() {
+    return this.uiListener;
+  }
+
+  uiListener = (paramEvent: ParameterChangeEvent<any>) => {
+    if (paramEvent.value !== undefined) {
+      const evt: StackEvent = {
+        kind: 'stackevent',
+        source: this._name,
+        name: this.name(),
+        type: StackEventType.VALUE,
+        val: paramEvent.value,
+      };
+      this.raiseUIEvent(evt);
+    } else if (paramEvent.metadataUpdated) {
+      const evt: StackEvent = {
+        kind: 'stackevent',
+        source: this._name,
+        name: this.name(),
+        type: StackEventType.UNKNOWN,
+        val: paramEvent.metadataUpdated.value,
+      };
+      switch (paramEvent.metadataUpdated.key) {
+        case 'color':
+          evt.type = StackEventType.COLOR;
+          break;
+        case 'label':
+          evt.type = StackEventType.LABEL;
+          break;
+        case 'context':
+          evt.type = StackEventType.CONTEXT;
+          break;
+        case ParameterTypeChangeRequestToken:
+          evt.type = StackEventType.TYPECHANGE;
+          const superParam: Parameter = paramEvent.parameter as Parameter;
+          evt.val = {
+            type: superParam.getType(),
+            min: superParam.getMin(),
+            max: superParam.getMax(),
+            step: superParam.getStep(),
+            possibleValues: superParam.getPossibleValues(),
+          };
+          this.deduceNewType(superParam.getType());
+          break;
+      }
+      this.raiseUIEvent(evt);
+    }
+  };
+
   setParameter(param: Parameter): void {
     this._parameter = param;
-    this._parameter.addListener(paramEvent => {
-      if (paramEvent.value !== undefined) {
-        const evt: StackEvent = {
-          kind: 'stackevent',
-          source: this._name,
-          name: this.name(),
-          type: StackEventType.VALUE,
-          val: paramEvent.value,
-        };
-        this.raiseUIEvent(evt); 
-      } else if (paramEvent.metadataUpdated) {
-        const evt: StackEvent = {
-          kind: 'stackevent',
-          source: this._name,
-          name: this.name(),
-          type: StackEventType.UNKNOWN,
-          val: paramEvent.metadataUpdated.value,
-        };
-        switch (paramEvent.metadataUpdated.key) {
-          case 'color':
-            evt.type = StackEventType.COLOR;
-            break;
-          case 'label':
-            evt.type = StackEventType.LABEL;
-            break;
-          case 'context':
-            evt.type = StackEventType.CONTEXT;
-            break;
-          case ParameterTypeChangeRequestToken:
-            evt.type = StackEventType.TYPECHANGE;
-            const superParam: Parameter = paramEvent.parameter as Parameter;
-            evt.val = {
-              type: superParam.getType(),
-              min: superParam.getMin(),
-              max: superParam.getMax(),
-              step: superParam.getStep(),
-              possibleValues: superParam.getPossibleValues(),
-            };
-            this.deduceNewType(superParam.getType());
-            break;
-        }
-        this.raiseUIEvent(evt);
-      }
-    });
+    this._parameter.addListener(this.uiListener);
   }
 
   deduceNewType(type: ParameterType) {
@@ -305,10 +315,12 @@ export class StackBase implements Stack {
       case ParameterType.BOOLEAN:
         this.setWidgetsType(WidgetType.TOGGLE);
         break;
-      case ParameterType.NUMBER || ParameterType.NUMBER_ARRAY:
+      case ParameterType.NUMBER:
+      case ParameterType.NUMBER_ARRAY:
         this.setWidgetsType(WidgetType.SLIDER_HORIZONTAL);
         break;
-      case ParameterType.STRING || ParameterType.STRING_ARRAY:
+      case ParameterType.STRING:
+      case ParameterType.STRING_ARRAY:
         this.setWidgetsType(WidgetType.SELECTOR_HORIZONTAL);
         break;
     }
