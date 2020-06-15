@@ -1,6 +1,7 @@
 import { Parameter, ParameterBlueprint, ParameterChangeEvent, ParameterType, ParameterTypeChangeRequestToken } from '@makeproaudio/parameters-js';
 import _ from 'lodash';
 import { UIWidget, Widget, WidgetBase, WidgetEvent, WidgetEventType, WidgetType } from '../widget/widget';
+import { BindFromRequestToken } from '@makeproaudio/parameters-js/dist/parameter/parameter-types';
 
 export interface Stack {
   name(): string;
@@ -260,48 +261,79 @@ export class StackBase implements Stack {
     return this.uiListener;
   }
 
-  uiListener = (paramEvent: ParameterChangeEvent<any>) => {
-    if (paramEvent.value !== undefined) {
+  uiListener = (uiParamEvent: ParameterChangeEvent<any>) => {
+    if (uiParamEvent.value !== undefined) {
       const evt: StackEvent = {
         kind: 'stackevent',
         source: this._name,
         name: this.name(),
         type: StackEventType.VALUE,
-        val: paramEvent.value,
+        val: uiParamEvent.value,
       };
       this.raiseUIEvent(evt);
-    } else if (paramEvent.metadataUpdated) {
-      const evt: StackEvent = {
-        kind: 'stackevent',
-        source: this._name,
-        name: this.name(),
-        type: StackEventType.UNKNOWN,
-        val: paramEvent.metadataUpdated.value,
-      };
-      switch (paramEvent.metadataUpdated.key) {
-        case 'color':
-          evt.type = StackEventType.COLOR;
-          break;
-        case 'label':
-          evt.type = StackEventType.LABEL;
-          break;
-        case 'context':
-          evt.type = StackEventType.CONTEXT;
-          break;
-        case ParameterTypeChangeRequestToken:
-          evt.type = StackEventType.TYPECHANGE;
-          const superParam: Parameter = paramEvent.parameter as Parameter;
-          evt.val = {
-            type: superParam.getType(),
-            min: superParam.getMin(),
-            max: superParam.getMax(),
-            step: superParam.getStep(),
-            possibleValues: superParam.getPossibleValues(),
-          };
-          this.deduceNewType(superParam.getType());
-          break;
+    } else if (uiParamEvent.metadataUpdated) {
+      if (uiParamEvent.metadataUpdated.key === BindFromRequestToken) {
+        /* A new parameter has been bound - do a full sync of the entire stack */
+        /* color */
+        let evt: StackEvent = {
+          kind: 'stackevent',
+          source: this._name,
+          name: this.name(),
+          type: StackEventType.COLOR,
+          val: uiParamEvent.parameter.getMetadata('color'),
+        };
+        this.raiseUIEvent(evt);
+        /* label */
+        evt = {
+          kind: 'stackevent',
+          source: this._name,
+          name: this.name(),
+          type: StackEventType.LABEL,
+          val: uiParamEvent.parameter.getMetadata('label'),
+        };
+        this.raiseUIEvent(evt);
+        /* context */
+        evt = {
+          kind: 'stackevent',
+          source: this._name,
+          name: this.name(),
+          type: StackEventType.CONTEXT,
+          val: uiParamEvent.parameter.getMetadata('context'),
+        };
+        this.raiseUIEvent(evt);
+      } else {
+        const evt: StackEvent = {
+          kind: 'stackevent',
+          source: this._name,
+          name: this.name(),
+          type: StackEventType.UNKNOWN,
+          val: uiParamEvent.metadataUpdated.value,
+        };
+        switch (uiParamEvent.metadataUpdated.key) {
+          case 'color':
+            evt.type = StackEventType.COLOR;
+            break;
+          case 'label':
+            evt.type = StackEventType.LABEL;
+            break;
+          case 'context':
+            evt.type = StackEventType.CONTEXT;
+            break;
+          case ParameterTypeChangeRequestToken:
+            evt.type = StackEventType.TYPECHANGE;
+            const superParam: Parameter = uiParamEvent.parameter as Parameter;
+            evt.val = {
+              type: superParam.getType(),
+              min: superParam.getMin(),
+              max: superParam.getMax(),
+              step: superParam.getStep(),
+              possibleValues: superParam.getPossibleValues(),
+            };
+            this.deduceNewType(superParam.getType());
+            break;
+        }
+        this.raiseUIEvent(evt);
       }
-      this.raiseUIEvent(evt);
     }
   };
 
