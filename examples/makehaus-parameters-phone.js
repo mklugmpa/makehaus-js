@@ -9,7 +9,16 @@ const layoutJson = fs.readFileSync(jsonPath);
 const animateBindsForward = ({ widgetStacks, typesStacks, bindStacks }) => {
   const selectedColor = '#0000ff';
   const unselectedColor = '#444444';
+
+  const colors = ['#ff0000', '#00ff00', '#0000ff', '#00ffff'];
+  const colorMap = new Map();
+  [0, 1, 2, 3].forEach(n => {
+    colorMap.set(n, colors[n]);
+    widgetStacks[n].setColor(colors[n]);
+  });
+
   const parametersOfStack = widgetStacks.map(s => s.parameter());
+
   const map = new Map();
   const selectedMap = new Map();
 
@@ -48,7 +57,7 @@ const animateBindsForward = ({ widgetStacks, typesStacks, bindStacks }) => {
     selectedMap.set(s, !selectedMap.get(s));
   };
 
-  const handleColor = s => {
+  const handleBindColor = s => {
     applyColor(s);
   };
 
@@ -89,7 +98,39 @@ const animateBindsForward = ({ widgetStacks, typesStacks, bindStacks }) => {
   const toggleSelected = s => {
     updateParameterSelectedState(s);
     selectedMap.get(s) ? handleSelected(s) : handleUnselected(s);
-    handleColor(s);
+    handleBindColor(s);
+  };
+
+  typesStacks.forEach(s => {
+    s.parameter().addListener(evt => {
+      if (evt.value) {
+        const mappedIdx =
+          s
+            .parameter()
+            .id()
+            .split('-')[1] % 5;
+        switch (evt.value) {
+          case 'TYP':
+            toggle(mappedIdx);
+            break;
+          default:
+            break;
+        }
+      }
+    });
+  });
+
+  let i = 0;
+  const toggle = idx => {
+    const available = [
+      { min: 0, max: 100, step: 1, value: 0, type: ParameterType.NUMBER },
+      { min: 0, max: 100, step: 10, value: 0, type: ParameterType.NUMBER },
+      // { values: ['A', 'B', 'C', 'D', 'E'], value: 'A', type: ParameterType.STRING_ARRAY },
+      { values: [0, 5, 10, 15, 20, 21, 22, 23], value: 0, type: ParameterType.NUMBER_ARRAY },
+      // { value: true, type: ParameterType.BOOLEAN },
+    ];
+
+    parametersOfStack[idx].updateType(available[++i % available.length]);
   };
 };
 

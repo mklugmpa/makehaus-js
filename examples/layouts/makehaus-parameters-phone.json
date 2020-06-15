@@ -114,7 +114,7 @@
                         "TYP"
                     ],
                     "defaultValue": "TYP",
-                    "color": "#00ff00",
+                    "color": "#ff9843",
                     "widgets": [
                         {
                             "name": "widget-5",
@@ -130,7 +130,7 @@
                         "TYP"
                     ],
                     "defaultValue": "TYP",
-                    "color": "#00ff00",
+                    "color": "#ff9843",
                     "widgets": [
                         {
                             "name": "widget-6",
@@ -146,7 +146,7 @@
                         "TYP"
                     ],
                     "defaultValue": "TYP",
-                    "color": "#00ff00",
+                    "color": "#ff9843",
                     "widgets": [
                         {
                             "name": "widget-7",
@@ -162,7 +162,7 @@
                         "TYP"
                     ],
                     "defaultValue": "TYP",
-                    "color": "#00ff00",
+                    "color": "#ff9843",
                     "widgets": [
                         {
                             "name": "widget-8",
