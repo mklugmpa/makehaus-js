@@ -181,11 +181,10 @@
                     "context": "",
                     "label": "",
                     "values": [
-                        "BOUND",
-                        "UNBOUND"
+                        ">"
                     ],
-                    "defaultValue": "UNBOUND",
-                    "color": "#00ff00",
+                    "defaultValue": ">",
+                    "color": "#444444",
                     "widgets": [
                         {
                             "name": "widget-9",
@@ -198,11 +197,10 @@
                     "context": "",
                     "label": "",
                     "values": [
-                        "BOUND",
-                        "UNBOUND"
+                        ">"
                     ],
-                    "defaultValue": "UNBOUND",
-                    "color": "#00ff00",
+                    "defaultValue": ">",
+                    "color": "#444444",
                     "widgets": [
                         {
                             "name": "widget-10",
@@ -215,11 +213,10 @@
                     "context": "",
                     "label": "",
                     "values": [
-                        "BOUND",
-                        "UNBOUND"
+                        ">"
                     ],
-                    "defaultValue": "UNBOUND",
-                    "color": "#00ff00",
+                    "defaultValue": ">",
+                    "color": "#444444",
                     "widgets": [
                         {
                             "name": "widget-11",
@@ -232,15 +229,14 @@
                     "context": "",
                     "label": "",
                     "values": [
-                        "BOUND",
-                        "UNBOUND"
+                        ">"
                     ],
-                    "defaultValue": "UNBOUND",
-                    "color": "#00ff00",
+                    "defaultValue": ">",
+                    "color": "#444444",
                     "widgets": [
                         {
                             "name": "widget-12",
-                            "type": "BUTTON"
+                            "type": "EMPTY"
                         }
                     ]
                 }
