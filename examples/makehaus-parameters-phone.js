@@ -46,7 +46,6 @@ const animateBindsForward = ({ widgetStacks, typesStacks, bindStacks }) => {
   const toggleBind = s => {
     console.log(`toggling ${map.get(s)} of stack ${s.name()}`);
     toggleSelected(s);
-    // parametersOfStack[mappedIdx].bindFrom(parametersOfStack[mappedIdx + 1], () => {});
   };
 
   const applyColor = s => {
