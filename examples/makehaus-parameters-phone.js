@@ -124,7 +124,7 @@ const animateBindsForward = ({ widgetStacks, typesStacks, bindStacks }) => {
     const available = [
       { min: 0, max: 100, step: 1, value: 0, type: ParameterType.NUMBER },
       { min: 0, max: 100, step: 10, value: 0, type: ParameterType.NUMBER },
-      // { values: ['A', 'B', 'C', 'D', 'E'], value: 'A', type: ParameterType.STRING_ARRAY },
+      { values: ['A', 'B', 'C', 'D', 'E'], value: 'A', type: ParameterType.STRING_ARRAY },
       { values: [0, 5, 10, 15, 20, 21, 22, 23], value: 0, type: ParameterType.NUMBER_ARRAY },
       // { value: true, type: ParameterType.BOOLEAN },
     ];
