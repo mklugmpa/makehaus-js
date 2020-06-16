@@ -1,4 +1,5 @@
 import { LayoutParser } from './parser/parser';
+import { UI } from './ui/ui';
 
 export const MakeHaus = {
   init: (layoutJson: string, uiReadyCallback: () => void, tcReadyCallback: () => void, config?: { websocketPort?: number; webappPort?: number }) => {
@@ -26,5 +27,9 @@ export const MakeHaus = {
       },
       config ? (config.websocketPort ? config.websocketPort : 8001) : 8001
     );
+  },
+
+  refreshUI: () => {
+    UI.refresh();
   },
 };

@@ -21,6 +21,12 @@ class UIManager {
     }
   };
 
+  refresh = () => {
+    if (this.socket) {
+      this.socket.emit('brute-force-refresh', '');
+    }
+  };
+
   private app: express.Application;
   private server: Server;
   private io: SocketIO.Server;
@@ -124,6 +130,12 @@ class UIManager {
               case WidgetType.BUTTON:
                 if (data.widget.event === WidgetEventType.PRESS) {
                   widget.onPressed(false);
+                }
+                break;
+              case WidgetType.SLIDER_HORIZONTAL:
+              case WidgetType.SLIDER_VERTICAL:
+                if (data.widget.event === WidgetEventType.CHANGE_ABSOLUTE) {
+                  widget.onAbsoluteChange(data.widget.value);
                 }
                 break;
               default:

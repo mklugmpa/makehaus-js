@@ -92,6 +92,8 @@ const animateBindsForward = ({ widgetStacks, typesStacks, bindStacks }) => {
 
     const leftOfMe = bindStacks.slice(0, bindStacks.indexOf(s));
     bindAllToLeftToDestination(param, leftOfMe, bindStacks.indexOf(s));
+
+    MakeHaus.refreshUI();
   };
 
   const toggleSelected = s => {
