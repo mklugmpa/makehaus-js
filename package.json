@@ -84,6 +84,7 @@
     "makehaussimplemotorfader4": "cd examples && node makehaus-simple-motorfader4",
     "makehausfullphone": "cd examples && node makehaus-full-phone",
     "makehausfulltablet": "cd examples && node makehaus-full-tablet",
-    "makehausparametersphone": "cd examples && node makehaus-parameters-phone"
+    "makehausparametersphone": "cd examples && node makehaus-parameters-phone",
+    "makehausparameterstablet": "cd examples && node makehaus-parameters-tablet"
   }
 }
