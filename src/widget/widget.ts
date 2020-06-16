@@ -200,8 +200,8 @@ export class WidgetBase extends EventEmitter implements Widget {
 
   setType(type: WidgetType): void {
     /* Only UI Widgets can change their WidgetType. */
-    if (this._derivedFromHardware) throw Error('cannot change type for a tilechain widget');
-    if (!UIWidgetTypes.includes(type)) throw Error('cannot change type to a non-UI widget type');
+    if (this._derivedFromHardware) return;
+    if (!UIWidgetTypes.includes(type)) return;
     /* Can't update the type if the requested type is the same as the existing one */
     if (this._type === type) return;
     if (this._stack) {

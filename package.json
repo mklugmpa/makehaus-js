@@ -1,6 +1,6 @@
 {
   "name": "@makeproaudio/makehaus-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A minimalistic nodejs client to speak to the MakeProAudio Tiles Hub",
   "author": "MakeProAudio GmbH",
   "license": "AGPL",
@@ -83,6 +83,7 @@
     "makehaussimpleencoder12press": "cd examples && node makehaus-simple-encoder12-press",
     "makehaussimplemotorfader4": "cd examples && node makehaus-simple-motorfader4",
     "makehausfullphone": "cd examples && node makehaus-full-phone",
-    "makehausfulltablet": "cd examples && node makehaus-full-tablet"
+    "makehausfulltablet": "cd examples && node makehaus-full-tablet",
+    "makehausparametersphone": "cd examples && node makehaus-parameters-phone"
   }
 }

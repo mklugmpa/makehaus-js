@@ -382,11 +382,7 @@ export class StackBase implements Stack {
   }
 
   setWidgetsType(type: WidgetType): void {
-    try {
-      this.widgets().forEach(w => w.setType(type));
-    } catch (err) {
-      console.log(err);
-    }
+    this.widgets().forEach(w => w.setType(type));
   }
 }
 
