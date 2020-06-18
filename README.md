@@ -1,8 +1,8 @@
-# Tiles API
+# MakeHaus-JS
 
 ## Introduction
 
-The Tiles API Client (nodejs) is a minimalistic nodejs client to speak to the MakeProAudio Tiles Hub. Using this client API, you can speak to **Tile Chains** connected to a **Tiles Hub** running on a local or remote computer. Click [here](here) for more information on Tiles Hub. Currently you can only speak to a single Tile Chain. Multiplicity of Tile Chains will be supported later.
+The MakeHaus-JS project is a nodejs environment which lets you speak to **Tile Chains** connected to a **Tiles Hub** running on a local or remote computer. Click [here](here) for more information on Tiles Hub. Currently you can only speak to a single Tile Chain. Multiplicity of Tile Chains will be supported later.
 
 ## Identifying COM Port On Your OS
 
