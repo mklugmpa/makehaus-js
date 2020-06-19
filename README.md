@@ -138,7 +138,7 @@ if (ENABLEDIAGNOSTICS) diag.start(hub);
 
 You can do pretty cool things with Tiles! Depending on what is present on your Chain, if started, the `AutoAnimate` module will animate an Encoder Tile, a Fader Tile and a Button Tile in the following manner:
 
-1. Pressing and Releasing any Encoder will cycle colours on the LED Buttons
+1. Pressing and Releasing any Encoder will cycle colors on the LED Buttons
 2. Turning Encoders right and left will move Motor Faders up and down
 
 ```javascript
