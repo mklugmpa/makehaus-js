@@ -12,34 +12,11 @@ abstract class TileEncoder extends TileBase<Encoder> {
     }
     const encoderButtonFiltered = this.evtSubject.pipe(filter((ev: ControlEvent) => ev.com === TileEncoderComponents.BUTTON && this.isMine(ev)));
     const encoderEncoderFiltered = this.evtSubject.pipe(filter((ev: ControlEvent) => ev.com === comIdentifier && this.isMine(ev)));
-    encoderButtonFiltered
-      .pipe(
-        filter((ev: ControlEvent) => {
-          return ev.cmd === TileEncoderCommands.PRESSED && ev.idx >= this.size;
-        })
-      )
-      .subscribe(this.encoderTouched);
-    encoderButtonFiltered
-      .pipe(
-        filter((ev: ControlEvent) => {
-          return ev.cmd === TileEncoderCommands.RELEASED && ev.idx >= this.size;
-        })
-      )
-      .subscribe(this.encoderUntouched);
-    encoderButtonFiltered
-      .pipe(
-        filter((ev: ControlEvent) => {
-          return ev.cmd === TileEncoderCommands.PRESSED && ev.idx < this.size;
-        })
-      )
-      .subscribe(this.encoderPressed);
-    encoderButtonFiltered
-      .pipe(
-        filter((ev: ControlEvent) => {
-          return ev.cmd === TileEncoderCommands.RELEASED && ev.idx < this.size;
-        })
-      )
-      .subscribe(this.encoderReleased);
+
+    encoderEncoderFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileEncoderCommands.TOUCHED)).subscribe(this.encoderTouched);
+    encoderEncoderFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileEncoderCommands.UNTOUCHED)).subscribe(this.encoderUntouched);
+    encoderButtonFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileEncoderCommands.PRESSED)).subscribe(this.encoderPressed);
+    encoderButtonFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileEncoderCommands.RELEASED)).subscribe(this.encoderReleased);
     encoderEncoderFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileEncoderCommands.RIGHT)).subscribe(this.encoderTurnedRight);
     encoderEncoderFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileEncoderCommands.LEFT)).subscribe(this.encoderTurnedLeft);
   }
@@ -123,6 +100,8 @@ abstract class TileEncoder extends TileBase<Encoder> {
 }
 
 export const TileEncoderCommands = {
+  TOUCHED: 'TOUCHED',
+  UNTOUCHED: 'UNTOUCHED',
   PRESSED: 'PRESSED',
   RELEASED: 'RELEASED',
   RIGHT: 'TURNED_RIGHT',

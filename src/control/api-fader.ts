@@ -16,7 +16,7 @@ abstract class TileFader extends TileBase<MotorFader> {
       })
     );
     faderFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileFaderCommands.TOUCHED)).subscribe(this.faderTouched);
-    faderFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileFaderCommands.RELEASED)).subscribe(this.faderReleased);
+    faderFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileFaderCommands.UNTOUCHED)).subscribe(this.faderReleased);
     faderFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileFaderCommands.UPDATED)).subscribe(this.faderUpdated);
     faderFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileFaderCommands.UPDATE)).subscribe(this.setFaderValue);
   }
@@ -63,7 +63,7 @@ abstract class TileFader extends TileBase<MotorFader> {
 
 export const TileFaderCommands = {
   TOUCHED: 'TOUCHED',
-  RELEASED: 'RELEASED',
+  UNTOUCHED: 'UNTOUCHED',
   UPDATED: 'UPDATED',
   UPDATE: 'UPDATE',
 };

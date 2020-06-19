@@ -21,7 +21,7 @@ export class LedButton extends TCWidget {
     this.color = color;
     /* Create the Control Event to change the color type and pass it to the event stream for processing */
     this.evtSubject.next({
-      cmd: TileButLedCommands.COLOUR,
+      cmd: TileButLedCommands.COLOR,
       com: TileButLedComponents.LED,
       idx: this.widgetId - 1,
       msg_type: MessageType.EVENT,

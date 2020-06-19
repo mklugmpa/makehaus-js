@@ -25,8 +25,8 @@ abstract class TileLedButton extends TileBase<LedButton> {
     buttonFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileButLedCommands.PRESSED)).subscribe(this.buttonPressed);
     buttonFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileButLedCommands.RELEASED)).subscribe(this.buttonReleased);
 
-    /* For all commands that send data to the hardware widgets, such as updating the colour, making the LED flash, we set up a generic forward-as-is handler and assume the higher classes will compose the message appropriately.*/
-    buttonFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileButLedCommands.COLOUR)).subscribe(this.forwardAsIs);
+    /* For all commands that send data to the hardware widgets, such as updating the color, making the LED flash, we set up a generic forward-as-is handler and assume the higher classes will compose the message appropriately.*/
+    buttonFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileButLedCommands.COLOR)).subscribe(this.forwardAsIs);
     buttonFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileButLedCommands.FLASH)).subscribe(this.forwardAsIs);
     buttonFiltered.pipe(filter((ev: ControlEvent) => ev.cmd === TileButLedCommands.FLASHSTOP)).subscribe(this.forwardAsIs);
   }
@@ -66,9 +66,9 @@ abstract class TileLedButton extends TileBase<LedButton> {
 export const TileButLedCommands = {
   PRESSED: 'PRESSED',
   RELEASED: 'RELEASED',
-  COLOUR: 'COLOUR',
+  COLOR: 'COLOR',
   FLASH: 'FLASH',
-  FLASHSTOP: 'FLASH-CEASE',
+  FLASHSTOP: 'FLASH_STOP',
 };
 
 export const TileButLedComponents = {

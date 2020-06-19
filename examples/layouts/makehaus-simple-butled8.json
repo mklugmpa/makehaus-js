@@ -30,7 +30,7 @@
                         {
                             "name": "butled",
                             "tilechain": "tilechain-1",
-                            "identifier": "8B.1.1.3",
+                            "identifier": "8B.1.1.1",
                             "event": "PRESS"
                         }
                     ]
