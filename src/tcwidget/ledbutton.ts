@@ -117,10 +117,14 @@ export class LedButton extends TCWidget {
     return this.color;
   }
 
+  // ToDo: create color names map
   private hexColorFromString = (color: string): number => {
-    const toParse = color.startsWith('#') ? color.slice(1) : color;
-    const col = parseInt(toParse, 16);
-    return col;
+    // parse hex or decimal color value from string
+    const colval = color.startsWith('#') ? parseInt(color.slice(1), 16) : parseInt(color);
+    if (isNaN(colval)) {
+      // ToDo: lookup color value from color names map
+    }
+    return colval;
   };
 }
 

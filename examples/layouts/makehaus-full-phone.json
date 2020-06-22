@@ -195,6 +195,11 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "row-3",
+            "weight": 1,
+            "widgetstacks": []
         }
     ]
 }
