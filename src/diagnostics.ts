@@ -1,3 +1,8 @@
+/*
+This file is part of MakeHaus JS, the MakeHaus API for Node.js, released under AGPL-3.0 license.
+(c) 2019, 2020 MakeProAudio GmbH and Node.js contributors. All rights reserved.
+*/
+
 import { Tile } from './control/api-base';
 import { TileLedButton12, TileLedButton8 } from './control/api-butled';
 import { LedButton, LedButtonEvents } from './tcwidget/ledbutton';

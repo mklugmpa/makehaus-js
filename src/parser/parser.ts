@@ -1,3 +1,8 @@
+/*
+This file is part of MakeHaus JS, the MakeHaus API for Node.js, released under AGPL-3.0 license.
+(c) 2019, 2020 MakeProAudio GmbH and Node.js contributors. All rights reserved.
+*/
+
 import { Layout, TileChain, Widget as WidgetModel, Row as RowModel, Stack as StackModel, WidgetEvent as WidgetModelEvent } from '../models/model';
 import { Rows } from '../row/rows';
 import { Stacks } from '../stack/stacks';

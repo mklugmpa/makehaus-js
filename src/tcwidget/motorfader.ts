@@ -1,3 +1,8 @@
+/*
+This file is part of MakeHaus JS, the MakeHaus API for Node.js, released under AGPL-3.0 license.
+(c) 2019, 2020 MakeProAudio GmbH and Node.js contributors. All rights reserved.
+*/
+
 import { TCWidget, TCWidgetListener } from './tcwidget-base';
 import { TileFaderComponents, TileFaderCommands } from '../control/api-fader';
 import { MessageType } from '../control/hub';
