@@ -1,3 +1,3 @@
 const { hub, autoAnimate } = require('..');
-hub.init('localhost', '8192');
+hub.init('raspi-3b-mpa', '8192');
 autoAnimate.start(hub);
