@@ -8,9 +8,11 @@ import { filter } from 'rxjs/operators';
 import { NextObserver } from 'rxjs';
 import { LedButton, ButtonListener, LedButtonEvents } from '../tcwidget/ledbutton';
 import { client } from './client';
+import { registry } from '../registry/registry';
 
 /* The abstract base class for all LedButton boards, i.e TileLedButton8 and TileLedButton12 */
 abstract class TileLedButton extends TileBase<LedButton> {
+  objectHandle = '';
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number) {
     super(evtSubject, chainId, boardType, tileType, tileIndex, size);
 
@@ -86,11 +88,15 @@ export class TileLedButton12 extends TileLedButton {
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
     /*the only concretization done here is in the size of the board type.*/
     super(evtSubject, chainId, boardType, Tile.LEDBUTTON12, tileIndex, 12);
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.LEDBUTTON12 + ',tileIndex=' + tileIndex, '#ledbutton,#led,#button,#tile');
+    console.log('objectHandle = ' + this.objectHandle);
   }
 }
 
 export class TileLedButton8 extends TileLedButton {
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
     super(evtSubject, chainId, boardType, Tile.LEDBUTTON8, tileIndex, 8);
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.LEDBUTTON8 + ',tileIndex=' + tileIndex, '#ledbutton,#led,#button,#tile');
+    console.log('objectHandle = ' + this.objectHandle);
   }
 }

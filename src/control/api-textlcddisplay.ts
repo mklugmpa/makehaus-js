@@ -8,6 +8,7 @@ import { TileBase, Tile, BoardType } from './api-base';
 import { filter } from 'rxjs/operators';
 import { NextObserver } from 'rxjs';
 import { client } from './client';
+import { registry } from '../registry/registry';
 
 abstract class TileTextLcdDisplay extends TileBase<TextLcdDisplay> {
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number) {
@@ -27,13 +28,13 @@ abstract class TileTextLcdDisplay extends TileBase<TextLcdDisplay> {
   }
 
   setText: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       client.send(what);
     },
   };
 
   setBar: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       client.send(what);
     },
   };
@@ -55,8 +56,11 @@ abstract class TileTextLcdDisplay extends TileBase<TextLcdDisplay> {
 }
 
 export class TileTextLcdDisplayDual extends TileTextLcdDisplay {
+  private _objectHandle = '';
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
     super(evtSubject, chainId, boardType, Tile.TEXTLCDDISPLAYDUAL, tileIndex, 2);
+    this._objectHandle = registry.registerObject(this, 'tileType=' + Tile.TEXTLCDDISPLAYDUAL + ',tileIndex=' + tileIndex, '#textlcddisplay,#lcd,#display,#text,#tile');
+    console.log('objectHandle = ' + this._objectHandle);
   }
 }
 

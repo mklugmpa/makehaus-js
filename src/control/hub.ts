@@ -31,7 +31,7 @@ export class Hub extends EventEmitter {
       if (this.inited === true) {
         /* Check whether the hub proxy has already been inited and avoid reinitialization */
         console.log('Tile Chain was reconnected to hub. Avoiding reinitialization');
-        Stacks.getAll().forEach(stack => {
+        Stacks.getAll().forEach((stack) => {
           const stackbase = stack as StackBase;
           stackbase.sync();
         });
@@ -46,7 +46,7 @@ export class Hub extends EventEmitter {
 
       /* Depending on the board info, create different base objects. Refer to TileBase and its
        * derivate classes for further information */
-      what.board_infos.forEach(boardInfo => {
+      what.board_infos.forEach((boardInfo) => {
         switch (boardInfo.board_type) {
           case BoardType.TILEBUTLED12:
             tile = new TileLedButton12(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx);
@@ -98,6 +98,18 @@ export class Hub extends EventEmitter {
 
     /* register a data callback which is used as a high speed lane for all significant events */
     client.on('data', (json: any) => this.dataCallback(json));
+  };
+
+  close = () => {
+    /* Remove all listeners */
+    client.removeAllListeners('error');
+    client.removeAllListeners('connect');
+    client.removeAllListeners('close');
+    client.removeAllListeners('data');
+
+    /* Stop listening to the client for events. */
+    client.stop();
+    this.inited = false;
   };
 }
 

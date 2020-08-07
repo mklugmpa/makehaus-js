@@ -13,6 +13,7 @@ import { Tile } from './control/api-base';
 import { TileLedButton12, TileLedButton8 } from './control/api-butled';
 import { TileEncoder12, TileEncoder8 } from './control/api-encoder';
 import { TileFader4 } from './control/api-fader';
+import { registry, CallbackMsg, Interest, RegisteredObject } from './registry/registry';
 import { Stacks } from './stack/stacks';
 import { Widgets } from './widget/widgets';
 import { Rows } from './row/rows';
@@ -31,6 +32,8 @@ export { Tile };
 export { TileLedButton12, TileLedButton8 };
 export { TileEncoder12, TileEncoder8 };
 export { TileFader4 };
+
+export { registry, CallbackMsg, Interest, RegisteredObject };
 
 export { Row, Rows };
 export { Stack, Stacks };

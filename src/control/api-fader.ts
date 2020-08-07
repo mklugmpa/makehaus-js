@@ -8,8 +8,10 @@ import { filter } from 'rxjs/operators';
 import { NextObserver } from 'rxjs';
 import { MotorFader, FaderListener, MotorFaderEvents } from '../tcwidget/motorfader';
 import { client } from './client';
+import { registry } from '../registry/registry';
 
 abstract class TileFader extends TileBase<MotorFader> {
+  objectHandle = '';
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number) {
     super(evtSubject, chainId, boardType, tileType, tileIndex, size);
     for (let i = 0; i < this.size; i++) {
@@ -27,10 +29,10 @@ abstract class TileFader extends TileBase<MotorFader> {
   }
 
   faderTouched: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       const widget = this.widgets[what.idx] as MotorFader;
       widget.emit(MotorFaderEvents.TOUCHED, widget);
-      widget.widgetListeners.forEach(l => {
+      widget.widgetListeners.forEach((l) => {
         const faderListener = l as FaderListener;
         faderListener.onFaderTouched(widget, what.val);
       });
@@ -38,10 +40,10 @@ abstract class TileFader extends TileBase<MotorFader> {
   };
 
   faderReleased: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       const widget = this.widgets[what.idx] as MotorFader;
       widget.emit(MotorFaderEvents.UNTOUCHED, widget);
-      widget.widgetListeners.forEach(l => {
+      widget.widgetListeners.forEach((l) => {
         const faderListener = l as FaderListener;
         faderListener.onFaderUntouched(widget, what.val);
       });
@@ -49,10 +51,10 @@ abstract class TileFader extends TileBase<MotorFader> {
   };
 
   faderUpdated: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       const widget = this.widgets[what.idx] as MotorFader;
       widget.emit(MotorFaderEvents.UPDATED, widget, what.val);
-      widget.widgetListeners.forEach(l => {
+      widget.widgetListeners.forEach((l) => {
         const faderListener = l as FaderListener;
         faderListener.onFaderUpdated(widget, what.val);
       });
@@ -60,7 +62,7 @@ abstract class TileFader extends TileBase<MotorFader> {
   };
 
   setFaderValue: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       client.send(what);
     },
   };
@@ -80,5 +82,7 @@ export const TileFaderComponents = {
 export class TileFader4 extends TileFader {
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
     super(evtSubject, chainId, boardType, Tile.MOTORFADER4, tileIndex, 4);
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.MOTORFADER4 + ',tileIndex=' + tileIndex, '#fader,#tile');
+    console.log('objectHandle = ' + this.objectHandle);
   }
 }

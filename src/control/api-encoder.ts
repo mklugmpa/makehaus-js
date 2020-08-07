@@ -8,8 +8,10 @@ import { filter } from 'rxjs/operators';
 import { NextObserver } from 'rxjs';
 import { defaultEncoderAccelarator } from './encoder-accelerator';
 import { Encoder, EncoderListener, EncoderEvents } from '../tcwidget/encoder';
+import { registry } from '../registry/registry';
 
 abstract class TileEncoder extends TileBase<Encoder> {
+  objectHandle = '';
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, comIdentifier: string) {
     super(evtSubject, chainId, boardType, tileType, tileIndex, size);
     for (let i = 0; i < this.size; i++) {
@@ -31,10 +33,10 @@ abstract class TileEncoder extends TileBase<Encoder> {
   }
 
   private encoderTouched: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       const widget = this.widgets[this.trueIndex(what.idx)];
       widget.emit(EncoderEvents.TOUCHED, widget);
-      widget.widgetListeners.forEach(l => {
+      widget.widgetListeners.forEach((l) => {
         const encoderListener = l as EncoderListener;
         encoderListener.onEncoderTouched(widget);
       });
@@ -42,10 +44,10 @@ abstract class TileEncoder extends TileBase<Encoder> {
   };
 
   private encoderUntouched: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       const widget = this.widgets[this.trueIndex(what.idx)];
       widget.emit(EncoderEvents.UNTOUCHED, widget);
-      widget.widgetListeners.forEach(l => {
+      widget.widgetListeners.forEach((l) => {
         const encoderListener = l as EncoderListener;
         encoderListener.onEncoderUntouched(widget);
       });
@@ -53,10 +55,10 @@ abstract class TileEncoder extends TileBase<Encoder> {
   };
 
   private encoderPressed: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       const widget = this.widgets[this.trueIndex(what.idx)];
       widget.emit(EncoderEvents.PRESSED, widget);
-      widget.widgetListeners.forEach(l => {
+      widget.widgetListeners.forEach((l) => {
         const encoderListener = l as EncoderListener;
         encoderListener.onEncoderPressed(widget);
       });
@@ -64,10 +66,10 @@ abstract class TileEncoder extends TileBase<Encoder> {
   };
 
   private encoderReleased: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       const widget = this.widgets[this.trueIndex(what.idx)];
       widget.emit(EncoderEvents.RELEASED, widget);
-      widget.widgetListeners.forEach(l => {
+      widget.widgetListeners.forEach((l) => {
         const encoderListener = l as EncoderListener;
         encoderListener.onEncoderReleased(widget);
       });
@@ -75,11 +77,11 @@ abstract class TileEncoder extends TileBase<Encoder> {
   };
 
   private encoderTurnedRight: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       const widget = this.widgets[this.trueIndex(what.idx)];
       const accl = this.getAcceleratedValue(what.val);
       widget.emit(EncoderEvents.RIGHT, widget, accl);
-      widget.widgetListeners.forEach(l => {
+      widget.widgetListeners.forEach((l) => {
         const encoderListener = l as EncoderListener;
         encoderListener.onEncoderTurnedRight(widget, accl);
       });
@@ -87,11 +89,11 @@ abstract class TileEncoder extends TileBase<Encoder> {
   };
 
   private encoderTurnedLeft: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       const widget = this.widgets[this.trueIndex(what.idx)];
       const accl = this.getAcceleratedValue(what.val);
       widget.emit(EncoderEvents.LEFT, widget, accl);
-      widget.widgetListeners.forEach(l => {
+      widget.widgetListeners.forEach((l) => {
         const encoderListener = l as EncoderListener;
         encoderListener.onEncoderTurnedLeft(widget, accl);
       });
@@ -120,11 +122,15 @@ export const TileEncoderComponents = {
 export class TileEncoder8 extends TileEncoder {
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
     super(evtSubject, chainId, boardType, Tile.ENCODER8, tileIndex, 8, 'ENCODER');
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.ENCODER8 + ',tileIndex=' + tileIndex, '#encoder,#tile');
+    console.log('objectHandle = ' + this.objectHandle);
   }
 }
 
 export class TileEncoder12 extends TileEncoder {
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
     super(evtSubject, chainId, boardType, Tile.ENCODER12, tileIndex, 12, 'ENCODER');
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.ENCODER12 + ',tileIndex=' + tileIndex, '#encoder,#tile');
+    console.log('objectHandle = ' + this.objectHandle);
   }
 }
