@@ -85,7 +85,7 @@ export class Registry {
   };
 
   log = (msg: string) => {
-    console.log('[REGISTRY] ' + msg);
+    //console.log('[REGISTRY] ' + msg);
   };
 }
 

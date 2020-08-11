@@ -82,7 +82,7 @@ export const TileFaderComponents = {
 export class TileFader4 extends TileFader {
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
     super(evtSubject, chainId, boardType, Tile.MOTORFADER4, tileIndex, 4);
-    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.MOTORFADER4 + ',tileIndex=' + tileIndex, '#fader,#tile');
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.MOTORFADER4 + ',tileIndex=' + tileIndex, '');
     console.log('objectHandle = ' + this.objectHandle);
   }
 }

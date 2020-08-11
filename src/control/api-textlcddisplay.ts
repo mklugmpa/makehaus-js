@@ -59,7 +59,7 @@ export class TileTextLcdDisplayDual extends TileTextLcdDisplay {
   private _objectHandle = '';
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
     super(evtSubject, chainId, boardType, Tile.TEXTLCDDISPLAYDUAL, tileIndex, 2);
-    this._objectHandle = registry.registerObject(this, 'tileType=' + Tile.TEXTLCDDISPLAYDUAL + ',tileIndex=' + tileIndex, '#textlcddisplay,#lcd,#display,#text,#tile');
+    this._objectHandle = registry.registerObject(this, 'tileType=' + Tile.TEXTLCDDISPLAYDUAL + ',tileIndex=' + tileIndex, '');
     console.log('objectHandle = ' + this._objectHandle);
   }
 }

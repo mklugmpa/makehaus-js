@@ -122,7 +122,7 @@ export const TileEncoderComponents = {
 export class TileEncoder8 extends TileEncoder {
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
     super(evtSubject, chainId, boardType, Tile.ENCODER8, tileIndex, 8, 'ENCODER');
-    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.ENCODER8 + ',tileIndex=' + tileIndex, '#encoder,#tile');
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.ENCODER8 + ',tileIndex=' + tileIndex, '');
     console.log('objectHandle = ' + this.objectHandle);
   }
 }
@@ -130,7 +130,7 @@ export class TileEncoder8 extends TileEncoder {
 export class TileEncoder12 extends TileEncoder {
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
     super(evtSubject, chainId, boardType, Tile.ENCODER12, tileIndex, 12, 'ENCODER');
-    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.ENCODER12 + ',tileIndex=' + tileIndex, '#encoder,#tile');
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.ENCODER12 + ',tileIndex=' + tileIndex, '');
     console.log('objectHandle = ' + this.objectHandle);
   }
 }

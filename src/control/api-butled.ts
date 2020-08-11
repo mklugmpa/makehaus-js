@@ -88,7 +88,7 @@ export class TileLedButton12 extends TileLedButton {
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
     /*the only concretization done here is in the size of the board type.*/
     super(evtSubject, chainId, boardType, Tile.LEDBUTTON12, tileIndex, 12);
-    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.LEDBUTTON12 + ',tileIndex=' + tileIndex, '#ledbutton,#led,#button,#tile');
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.LEDBUTTON12 + ',tileIndex=' + tileIndex, '');
     console.log('objectHandle = ' + this.objectHandle);
   }
 }
@@ -96,7 +96,7 @@ export class TileLedButton12 extends TileLedButton {
 export class TileLedButton8 extends TileLedButton {
   constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
     super(evtSubject, chainId, boardType, Tile.LEDBUTTON8, tileIndex, 8);
-    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.LEDBUTTON8 + ',tileIndex=' + tileIndex, '#ledbutton,#led,#button,#tile');
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.LEDBUTTON8 + ',tileIndex=' + tileIndex, '');
     console.log('objectHandle = ' + this.objectHandle);
   }
 }
