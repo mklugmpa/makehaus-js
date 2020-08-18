@@ -7,12 +7,12 @@ import { TextLcdDisplay } from '../tcwidget/textlcddisplay';
 import { TileBase, Tile, BoardType } from './api-base';
 import { filter } from 'rxjs/operators';
 import { NextObserver } from 'rxjs';
-import { client } from './client';
+import { Client } from './client';
 import { registry } from '../registry/registry';
 
 abstract class TileTextLcdDisplay extends TileBase<TextLcdDisplay> {
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number) {
-    super(evtSubject, chainId, boardType, tileType, tileIndex, size);
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, client: Client) {
+    super(evtSubject, chainId, boardType, tileType, tileIndex, size, client);
     for (let i = 0; i < this.size; i++) {
       const display = new TextLcdDisplay(this.chainId(), this.boardType(), this.tileIndex(), i, evtSubject);
       this.widgets.push(display);
@@ -29,18 +29,18 @@ abstract class TileTextLcdDisplay extends TileBase<TextLcdDisplay> {
 
   setText: NextObserver<ControlEvent> = {
     next: (what) => {
-      client.send(what);
+      this.client.send(what);
     },
   };
 
   setBar: NextObserver<ControlEvent> = {
     next: (what) => {
-      client.send(what);
+      this.client.send(what);
     },
   };
 
   private setup(idx: number) {
-    client.send({
+    this.client.send({
       cmd: 'SETUP',
       com: 'ST7032',
       msg_type: 'event',
@@ -57,10 +57,9 @@ abstract class TileTextLcdDisplay extends TileBase<TextLcdDisplay> {
 
 export class TileTextLcdDisplayDual extends TileTextLcdDisplay {
   private _objectHandle = '';
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
-    super(evtSubject, chainId, boardType, Tile.TEXTLCDDISPLAYDUAL, tileIndex, 2);
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client) {
+    super(evtSubject, chainId, boardType, Tile.TEXTLCDDISPLAYDUAL, tileIndex, 2, client);
     this._objectHandle = registry.registerObject(this, 'tileType=' + Tile.TEXTLCDDISPLAYDUAL + ',tileIndex=' + tileIndex, '');
-    console.log('objectHandle = ' + this._objectHandle);
   }
 }
 

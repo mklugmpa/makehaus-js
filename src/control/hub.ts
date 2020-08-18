@@ -3,7 +3,7 @@ This file is part of MakeHaus JS, the MakeHaus API for Node.js, released under A
 (c) 2019, 2020 MakeProAudio GmbH and Node.js contributors. All rights reserved.
 */
 
-import { client } from './client';
+import { Client } from './client';
 import { TileBase, BoardType } from './api-base';
 import { TileLedButton12, TileLedButton8 } from './api-butled';
 import { TileEncoder12, TileEncoder8 } from './api-encoder';
@@ -22,6 +22,15 @@ export class Hub extends EventEmitter {
   /* The TileBase class is the abstract base class for all Tile types. */
   private tiles: TileBase<TCWidget>[] = [];
   private inited: boolean = false;
+  private client: Client = new Client();
+  private host: string = '';
+  private port: number = 0;
+  private firstDisconnectError: boolean = true;
+  isConnected: boolean = false;
+
+  constructor() {
+    super();
+  }
 
   private dataCallback = (json: any) => {
     let what;
@@ -49,22 +58,22 @@ export class Hub extends EventEmitter {
       what.board_infos.forEach((boardInfo) => {
         switch (boardInfo.board_type) {
           case BoardType.TILEBUTLED12:
-            tile = new TileLedButton12(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx);
+            tile = new TileLedButton12(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client);
             break;
           case BoardType.TILEBUTLED8:
-            tile = new TileLedButton8(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx);
+            tile = new TileLedButton8(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client);
             break;
           case BoardType.TILEENCODER12:
-            tile = new TileEncoder12(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx);
+            tile = new TileEncoder12(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client);
             break;
           case BoardType.TILEENCODER8:
-            tile = new TileEncoder8(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx);
+            tile = new TileEncoder8(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client);
             break;
           case BoardType.TILEFADER4:
-            tile = new TileFader4(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx);
+            tile = new TileFader4(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client);
             break;
           case BoardType.TILETEXTLCDDUALDISPLAY:
-            tile = new TileTextLcdDisplayDual(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx);
+            tile = new TileTextLcdDisplayDual(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client);
             break;
           default:
             break;
@@ -89,27 +98,60 @@ export class Hub extends EventEmitter {
 
   init = (host: string, port: number) => {
     /* Start listening to the client for events. */
-    client.start(host, port);
+    this.host = host;
+    this.port = port;
+    this.client.start(host, port);
 
     /* Register event handlers for different event types on the server. */
-    client.on('error', (e: any) => console.log('error %s', e));
-    client.on('connect', () => console.log('Connection established to hub'));
-    client.on('close', (e: any) => console.log('close %s', e));
+    this.client.on('error', this.handleError);
+    this.client.on('connect', this.handleConnect);
+    this.client.on('close', this.handleClose);
 
     /* register a data callback which is used as a high speed lane for all significant events */
-    client.on('data', (json: any) => this.dataCallback(json));
+    this.client.on('data', this.handleData);
+  };
+
+  // event handler functions
+  handleError = (e: any) => {
+    // log all errors except repeatedly connection fails
+    if (e.errno == 'ECONNREFUSED') {
+      if (this.firstDisconnectError) {
+        console.log('TilesHub at ' + this.host + ':' + this.port + ' does not respond');
+        this.firstDisconnectError = false;
+      }
+    } else {
+      console.log('error %s', e);
+    }
+  };
+
+  handleConnect = () => {
+    console.log('TilesHub at ' + this.host + ':' + this.port + ' connected');
+    this.firstDisconnectError = true;
+  };
+
+  handleClose = (e: any) => {
+    if (this.firstDisconnectError) {
+      console.log('TilesHub at ' + this.host + ':' + this.port + ' disconnected (' + e + ')');
+    }
+    // set timeout to try to connect again after 3 secs
+    setTimeout(this.doReconnect, 3000);
+  };
+
+  handleData = (json: any) => {
+    this.dataCallback(json);
+  };
+
+  // try a reconnect after the set timeout
+  doReconnect = () => {
+    this.client.connect(this.host, this.port);
   };
 
   close = () => {
     /* Remove all listeners */
-    client.removeAllListeners('error');
-    client.removeAllListeners('connect');
-    client.removeAllListeners('close');
-    client.removeAllListeners('data');
+    this.client.removeAllListeners();
 
     /* Stop listening to the client for events. */
-    client.stop();
-    this.inited = false;
+    this.client.stop();
   };
 }
 

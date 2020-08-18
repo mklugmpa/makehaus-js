@@ -7,14 +7,15 @@ import { TileBase, Tile, BoardType } from './api-base';
 import { filter } from 'rxjs/operators';
 import { NextObserver } from 'rxjs';
 import { LedButton, ButtonListener, LedButtonEvents } from '../tcwidget/ledbutton';
-import { client } from './client';
+import { Client } from './client';
 import { registry } from '../registry/registry';
+import { Hub } from './hub';
 
 /* The abstract base class for all LedButton boards, i.e TileLedButton8 and TileLedButton12 */
 abstract class TileLedButton extends TileBase<LedButton> {
   objectHandle = '';
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number) {
-    super(evtSubject, chainId, boardType, tileType, tileIndex, size);
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, client: Client) {
+    super(evtSubject, chainId, boardType, tileType, tileIndex, size, client);
 
     /* Spawn the Widget objects for this tile type */
     for (let i = 0; i < this.size; i++) {
@@ -39,13 +40,13 @@ abstract class TileLedButton extends TileBase<LedButton> {
   }
 
   buttonPressed: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       /* Find the widget that corresponds to the hardware button which was pressed and cast it to the correct Widget type. */
       const widget = this.widgets[what.idx] as LedButton;
 
       /* Every Widget is an event emitter - on that widget, emit the fact that the PRESSED event was triggered and pass the widget as data */
       widget.emit(LedButtonEvents.PRESSED, widget);
-      widget.widgetListeners.forEach(l => {
+      widget.widgetListeners.forEach((l) => {
         const buttonListener = l as ButtonListener;
         buttonListener.onButtonPressed(widget);
       });
@@ -53,10 +54,10 @@ abstract class TileLedButton extends TileBase<LedButton> {
   };
 
   buttonReleased: NextObserver<ControlEvent> = {
-    next: what => {
+    next: (what) => {
       const widget = this.widgets[what.idx] as LedButton;
       widget.emit(LedButtonEvents.RELEASED, widget);
-      widget.widgetListeners.forEach(l => {
+      widget.widgetListeners.forEach((l) => {
         const buttonListener = l as ButtonListener;
         buttonListener.onButtonReleased(widget, what.val);
       });
@@ -64,8 +65,8 @@ abstract class TileLedButton extends TileBase<LedButton> {
   };
 
   forwardAsIs: NextObserver<ControlEvent> = {
-    next: what => {
-      client.send(what);
+    next: (what) => {
+      this.client.send(what);
     },
   };
 }
@@ -85,18 +86,16 @@ export const TileButLedComponents = {
 
 /* Concrete classes for LedButton type */
 export class TileLedButton12 extends TileLedButton {
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client) {
     /*the only concretization done here is in the size of the board type.*/
-    super(evtSubject, chainId, boardType, Tile.LEDBUTTON12, tileIndex, 12);
+    super(evtSubject, chainId, boardType, Tile.LEDBUTTON12, tileIndex, 12, client);
     this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.LEDBUTTON12 + ',tileIndex=' + tileIndex, '');
-    console.log('objectHandle = ' + this.objectHandle);
   }
 }
 
 export class TileLedButton8 extends TileLedButton {
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
-    super(evtSubject, chainId, boardType, Tile.LEDBUTTON8, tileIndex, 8);
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client) {
+    super(evtSubject, chainId, boardType, Tile.LEDBUTTON8, tileIndex, 8, client);
     this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.LEDBUTTON8 + ',tileIndex=' + tileIndex, '');
-    console.log('objectHandle = ' + this.objectHandle);
   }
 }

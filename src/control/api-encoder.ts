@@ -9,11 +9,12 @@ import { NextObserver } from 'rxjs';
 import { defaultEncoderAccelarator } from './encoder-accelerator';
 import { Encoder, EncoderListener, EncoderEvents } from '../tcwidget/encoder';
 import { registry } from '../registry/registry';
+import { Client } from './client';
 
 abstract class TileEncoder extends TileBase<Encoder> {
   objectHandle = '';
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, comIdentifier: string) {
-    super(evtSubject, chainId, boardType, tileType, tileIndex, size);
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, comIdentifier: string, client: Client) {
+    super(evtSubject, chainId, boardType, tileType, tileIndex, size, client);
     for (let i = 0; i < this.size; i++) {
       this.widgets.push(new Encoder(this.chainId(), this.boardType(), this.tileIndex(), i));
     }
@@ -120,17 +121,15 @@ export const TileEncoderComponents = {
 };
 
 export class TileEncoder8 extends TileEncoder {
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
-    super(evtSubject, chainId, boardType, Tile.ENCODER8, tileIndex, 8, 'ENCODER');
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client) {
+    super(evtSubject, chainId, boardType, Tile.ENCODER8, tileIndex, 8, 'ENCODER', client);
     this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.ENCODER8 + ',tileIndex=' + tileIndex, '');
-    console.log('objectHandle = ' + this.objectHandle);
   }
 }
 
 export class TileEncoder12 extends TileEncoder {
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number) {
-    super(evtSubject, chainId, boardType, Tile.ENCODER12, tileIndex, 12, 'ENCODER');
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client) {
+    super(evtSubject, chainId, boardType, Tile.ENCODER12, tileIndex, 12, 'ENCODER', client);
     this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.ENCODER12 + ',tileIndex=' + tileIndex, '');
-    console.log('objectHandle = ' + this.objectHandle);
   }
 }

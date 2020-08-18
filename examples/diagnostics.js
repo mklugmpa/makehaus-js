@@ -3,6 +3,7 @@ This file is part of MakeHaus JS, the MakeHaus API for Node.js, released under A
 (c) 2019, 2020 MakeProAudio GmbH and Node.js contributors. All rights reserved.
 */
 
-const { hub, diagnostics } = require('..');
-hub.init('localhost', '8192');
+const { Hub, diagnostics } = require('..');
+var hub = new Hub();
+hub.init('192.168.178.44', '8192');
 diagnostics.start(hub);

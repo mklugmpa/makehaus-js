@@ -137,7 +137,7 @@ class Depacketizer {
   }
 }
 
-class Client extends EventEmitter {
+export class Client extends EventEmitter {
   constructor() {
     super();
     this.packetizer = new Packetizer(this);
@@ -159,10 +159,16 @@ class Client extends EventEmitter {
       this.socket.setNoDelay(true);
       this.emit('connect');
     });
-    this.socket.on('close', (e: any) => this.emit('close', e));
+    this.socket.on('close', (e: any) => {
+      this.emit('close', e);
+    });
+    this.connect(addr_host, addr_port);
+  }
+  connect(addr_host: string, addr_port: number) {
     this.socket.connect(addr_port, addr_host);
   }
   stop() {
+    this.socket.removeAllListeners();
     this.socket.destroy();
   }
 
@@ -175,5 +181,5 @@ class Client extends EventEmitter {
 }
 
 /* Only a single instance of this class must be used throughout the system */
-export const client: Client = new Client();
-Object.seal(client);
+// export const client: Client = new Client();
+// Object.seal(client);
