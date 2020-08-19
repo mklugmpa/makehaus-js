@@ -1,7 +1,7 @@
 {
-  "name": "@makeproaudio/makehaus-js",
+  "name": "@makeproaudio/makehaus-nodered-lib",
   "version": "1.0.5",
-  "description": "A minimalistic nodejs client to speak to the MakeProAudio Tiles Hub",
+  "description": "A minimalistic nodejs client to speak to the MakeProAudio Tiles Hub for Node-RED",
   "author": "MakeProAudio GmbH",
   "license": "AGPL",
   "keywords": [
