@@ -11,8 +11,9 @@ import { Client } from './client';
 import { registry } from '../registry/registry';
 
 abstract class TileTextLcdDisplay extends TileBase<TextLcdDisplay> {
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, client: Client) {
-    super(evtSubject, chainId, boardType, tileType, tileIndex, size, client);
+  objectHandle = '';
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, client: Client, hubId: string) {
+    super(evtSubject, chainId, boardType, tileType, tileIndex, size, client, hubId);
     for (let i = 0; i < this.size; i++) {
       const display = new TextLcdDisplay(this.chainId(), this.boardType(), this.tileIndex(), i, evtSubject);
       this.widgets.push(display);
@@ -56,11 +57,17 @@ abstract class TileTextLcdDisplay extends TileBase<TextLcdDisplay> {
 }
 
 export class TileTextLcdDisplayDual extends TileTextLcdDisplay {
-  private _objectHandle = '';
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client) {
-    super(evtSubject, chainId, boardType, Tile.TEXTLCDDISPLAYDUAL, tileIndex, 2, client);
-    this._objectHandle = registry.registerObject(this, 'tileType=' + Tile.TEXTLCDDISPLAYDUAL + ',tileIndex=' + tileIndex, '');
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client, hubId: string) {
+    super(evtSubject, chainId, boardType, Tile.TEXTLCDDISPLAYDUAL, tileIndex, 2, client, hubId);
   }
+
+  init = () => {
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.TEXTLCDDISPLAYDUAL + ',tileIndex=' + this.tileIndex(), '', this.hubId);
+  };
+
+  exit = () => {
+    registry.unRegisterObject(this.objectHandle);
+  };
 }
 
 export const TileTextLcdDisplayComponents = {

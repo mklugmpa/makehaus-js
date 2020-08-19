@@ -13,8 +13,18 @@ import { Client } from './client';
 
 abstract class TileEncoder extends TileBase<Encoder> {
   objectHandle = '';
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, comIdentifier: string, client: Client) {
-    super(evtSubject, chainId, boardType, tileType, tileIndex, size, client);
+  constructor(
+    evtSubject: any,
+    chainId: string,
+    boardType: BoardType,
+    tileType: Tile,
+    tileIndex: number,
+    size: number,
+    comIdentifier: string,
+    client: Client,
+    hubId: string
+  ) {
+    super(evtSubject, chainId, boardType, tileType, tileIndex, size, client, hubId);
     for (let i = 0; i < this.size; i++) {
       this.widgets.push(new Encoder(this.chainId(), this.boardType(), this.tileIndex(), i));
     }
@@ -121,15 +131,29 @@ export const TileEncoderComponents = {
 };
 
 export class TileEncoder8 extends TileEncoder {
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client) {
-    super(evtSubject, chainId, boardType, Tile.ENCODER8, tileIndex, 8, 'ENCODER', client);
-    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.ENCODER8 + ',tileIndex=' + tileIndex, '');
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client, hubId: string) {
+    super(evtSubject, chainId, boardType, Tile.ENCODER8, tileIndex, 8, 'ENCODER', client, hubId);
   }
+
+  init = () => {
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.ENCODER8 + ',tileIndex=' + this.tileIndex(), '', this.hubId);
+  };
+
+  exit = () => {
+    registry.unRegisterObject(this.objectHandle);
+  };
 }
 
 export class TileEncoder12 extends TileEncoder {
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client) {
-    super(evtSubject, chainId, boardType, Tile.ENCODER12, tileIndex, 12, 'ENCODER', client);
-    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.ENCODER12 + ',tileIndex=' + tileIndex, '');
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client, hubId: string) {
+    super(evtSubject, chainId, boardType, Tile.ENCODER12, tileIndex, 12, 'ENCODER', client, hubId);
   }
+
+  init = () => {
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.ENCODER12 + ',tileIndex=' + this.tileIndex(), '', this.hubId);
+  };
+
+  exit = () => {
+    registry.unRegisterObject(this.objectHandle);
+  };
 }

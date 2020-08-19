@@ -6,6 +6,7 @@ This file is part of MakeHaus JS, the MakeHaus API for Node.js, released under A
 import { ReplaySubject } from 'rxjs';
 import { TCWidget } from '../tcwidget/tcwidget-base';
 import { Client } from './client';
+import { hub } from './hub';
 
 abstract class ControlEventProcessor {
   constructor(evtSubject: ReplaySubject<ControlEvent>) {
@@ -26,10 +27,11 @@ export abstract class TileBase<T extends TCWidget> extends ControlEventProcessor
   private _tileType: Tile;
   private _boardType: BoardType;
   client: Client;
+  hubId: string;
   size: number;
   widgets: T[] = [];
 
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, client: Client) {
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, client: Client, hubId: string) {
     super(evtSubject);
     this._chainId = chainId;
     this._boardType = boardType;
@@ -37,7 +39,12 @@ export abstract class TileBase<T extends TCWidget> extends ControlEventProcessor
     this._tileIndex = tileIndex;
     this.client = client;
     this.size = size;
+    this.hubId = hubId;
   }
+
+  init = (): void => {};
+
+  exit = (): void => {};
 
   tileIndex = (): number => {
     return this._tileIndex;

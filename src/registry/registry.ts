@@ -17,15 +17,18 @@ export class Registry {
   */
   registerInterest = (objectHandle: string, callback: Function, objectTypes: string, tags: string): string => {
     // create new Interest
-    this.log('registerInterest(' + objectHandle + ", '" + typeof callback + ", '" + objectTypes + "', '" + tags + "'");
+    this.log('registerInterest ' + objectHandle + ', ' + objectTypes + ', ' + tags);
     var newInterest = new Interest(objectHandle, callback, objectTypes, tags);
     var interestHandle = this.interestPool.addInterest(newInterest);
 
     // search for matching objects and call the new Interest back
     var matchingObjects = this.objectPool.getMatchingObjects(objectTypes, tags);
     if (matchingObjects.length > 0) {
-      this.log('(registerInterest) - ' + newInterest + '.callback ' + matchingObjects);
-      newInterest.callback(CallbackMsg.NEW_MATCH, matchingObjects);
+      this.log('MATCH FOUND: (registerInterest) - ' + newInterest.holdingObjectHandle + '.callback ' + matchingObjects[0].handle);
+      newInterest.callback(CallbackMsg.NEW_MATCH, matchingObjects[0]);
+    } else {
+      this.log('NO MATCH: (registerInterest) - ' + newInterest.holdingObjectHandle);
+      newInterest.callback(CallbackMsg.NO_MATCH, null);
     }
     return interestHandle;
   };
@@ -34,7 +37,7 @@ export class Registry {
   Unregisters an Interest
   */
   unRegisterInterest = (interestHandle: string): void => {
-    this.log('unRegisterInterest(' + interestHandle + ')');
+    this.log('unRegisterInterest ' + interestHandle);
     this.interestPool.deleteInterest(interestHandle);
   };
 
@@ -43,19 +46,16 @@ export class Registry {
   notifies all holders of Interests that match
   returns the Object handle
   */
-  registerObject = (objectReference: object, objectTypes: string, tags: string): string => {
+  registerObject = (objectReference: object, objectTypes: string, tags: string, hubId: string): string => {
     // create new registered Object
-    this.log('registerObject(' + objectReference + ", '" + objectTypes + "', '" + tags + "'");
-    var newObject = new RegisteredObject(objectReference, objectTypes, tags);
+    this.log('registerObject ' + objectReference + ', ' + objectTypes + ', ' + tags + ', ' + hubId);
+    var newObject = new RegisteredObject(objectReference, objectTypes, tags, hubId);
     var objectHandle = this.objectPool.addObject(newObject);
-
-    // create an Array to match the expected payload fomat for the callback
-    var payload: object[] = [newObject];
 
     // search for matching Interests and call them back
     this.interestPool.getMatchingInterests(objectTypes, tags).forEach((matchingInterest) => {
-      this.log('(registerObject) - ' + matchingInterest + '.callback ' + payload);
-      matchingInterest.callback(CallbackMsg.NEW_MATCH, payload);
+      this.log('MATCH FOUND: (registerObject) - ' + matchingInterest.holdingObjectHandle + '.callback ' + newObject.handle);
+      matchingInterest.callback(CallbackMsg.NEW_MATCH, newObject);
     });
     return objectHandle;
   };
@@ -66,12 +66,12 @@ export class Registry {
   notifies all holder objects of Interests that match
   */
   unRegisterObject = (objectHandle: string): void => {
-    this.log('unRegisterObject(' + objectHandle + ')');
+    this.log('unRegisterObject ' + objectHandle);
     var obj = this.objectPool.getObject(objectHandle);
 
     // inform all matching interest holders
     this.interestPool.getMatchingInterests(obj.objectTypes, obj.tags).forEach((matchingInterest) => {
-      this.log('(unRegisterObject) - ' + matchingInterest + '.callback ' + objectHandle);
+      this.log('MATCH LOST: (unRegisterObject) - ' + matchingInterest.holdingObjectHandle + '.callback ' + objectHandle);
       matchingInterest.callback(CallbackMsg.MATCH_LOST, objectHandle);
     });
 
@@ -85,7 +85,7 @@ export class Registry {
   };
 
   log = (msg: string) => {
-    //console.log('[REGISTRY] ' + msg);
+    console.log('[REGISTRY] ' + msg);
   };
 }
 
@@ -162,17 +162,27 @@ export class ObjectPool {
   /*
   adds a new Object to the pool
   */
-  addObject = (object: RegisteredObject): string => {
+  addObject = (newObject: RegisteredObject): string => {
+    var handle = '';
+
     // generate handle for this Interest
     this.currentObjectHandle++;
-    var handle = this.currentObjectHandle.toString();
-    object.handle = handle;
+    handle = this.currentObjectHandle.toString();
+    newObject.handle = handle;
 
-    // TODO: Avoid duplicate entries
+    // add Object to map
+    this.registeredObjects.set(handle, newObject);
 
-    // add Interest to map
-    this.registeredObjects.set(handle, object);
+    console.log('[ObjectPool] Registered Objects: ' + this.registeredObjects.size);
+    //this.logAllObjects();
     return handle;
+  };
+
+  /*
+  returns all registered Objects from the pool
+  */
+  getAllObjects = (): Map<any, any> => {
+    return this.registeredObjects;
   };
 
   /*
@@ -204,6 +214,15 @@ export class ObjectPool {
     }
     return matchingObjects;
   };
+
+  // Logging for debugging
+  private logAllObjects = () => {
+    this.registeredObjects.forEach(this.logMapElements);
+  };
+
+  private logMapElements = (value, key, map) => {
+    console.log(`m[${key}] = ${value}`);
+  };
 }
 
 export class Interest {
@@ -227,17 +246,20 @@ export class RegisteredObject {
   objectReference: object;
   objectTypes: string;
   tags: string;
+  hubId: string;
 
-  constructor(objectReference: object, objectTypes: string, tags: string) {
+  constructor(objectReference: object, objectTypes: string, tags: string, hubId: string) {
     this.handle = '';
     this.objectReference = objectReference;
     this.objectTypes = objectTypes;
     this.tags = tags;
+    this.hubId = hubId || '';
   }
 }
 
 export enum CallbackMsg {
   NEW_MATCH = 'NEW_MATCH',
+  NO_MATCH = 'NO_MATCH',
   MATCH_LOST = 'MATCH_LOST',
 }
 

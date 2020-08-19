@@ -3,7 +3,7 @@ This file is part of MakeHaus JS, the MakeHaus API for Node.js, released under A
 (c) 2019, 2020 MakeProAudio GmbH and Node.js contributors. All rights reserved.
 */
 
-import { hub } from './control/hub';
+import { Hub } from './control/hub';
 import { diagnostics } from './diagnostics';
 import { autoAnimate } from './autoanimate';
 import { LedButton, LedButtonEvents } from './tcwidget/ledbutton';
@@ -23,7 +23,7 @@ import { WidgetType, Widget } from './widget/widget';
 import { LayoutParser } from './parser/parser';
 import { MakeHaus } from './launch';
 
-export { hub, diagnostics, autoAnimate };
+export { Hub, diagnostics, autoAnimate };
 export { LedButton, LedButtonEvents };
 export { Encoder, EncoderEvents };
 export { MotorFader, MotorFaderEvents };

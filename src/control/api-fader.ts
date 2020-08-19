@@ -12,8 +12,8 @@ import { registry } from '../registry/registry';
 
 abstract class TileFader extends TileBase<MotorFader> {
   objectHandle = '';
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, client: Client) {
-    super(evtSubject, chainId, boardType, tileType, tileIndex, size, client);
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, client: Client, hubId: string) {
+    super(evtSubject, chainId, boardType, tileType, tileIndex, size, client, hubId);
     for (let i = 0; i < this.size; i++) {
       this.widgets.push(new MotorFader(this.chainId(), this.boardType(), this.tileIndex(), i, evtSubject));
     }
@@ -80,8 +80,15 @@ export const TileFaderComponents = {
 };
 
 export class TileFader4 extends TileFader {
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client) {
-    super(evtSubject, chainId, boardType, Tile.MOTORFADER4, tileIndex, 4, client);
-    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.MOTORFADER4 + ',tileIndex=' + tileIndex, '');
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client, hubId: string) {
+    super(evtSubject, chainId, boardType, Tile.MOTORFADER4, tileIndex, 4, client, hubId);
   }
+
+  init = () => {
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.MOTORFADER4 + ',tileIndex=' + this.tileIndex(), '', this.hubId);
+  };
+
+  exit = () => {
+    registry.unRegisterObject(this.objectHandle);
+  };
 }

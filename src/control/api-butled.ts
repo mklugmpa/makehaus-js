@@ -9,13 +9,12 @@ import { NextObserver } from 'rxjs';
 import { LedButton, ButtonListener, LedButtonEvents } from '../tcwidget/ledbutton';
 import { Client } from './client';
 import { registry } from '../registry/registry';
-import { Hub } from './hub';
 
 /* The abstract base class for all LedButton boards, i.e TileLedButton8 and TileLedButton12 */
 abstract class TileLedButton extends TileBase<LedButton> {
   objectHandle = '';
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, client: Client) {
-    super(evtSubject, chainId, boardType, tileType, tileIndex, size, client);
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileType: Tile, tileIndex: number, size: number, client: Client, hubId: string) {
+    super(evtSubject, chainId, boardType, tileType, tileIndex, size, client, hubId);
 
     /* Spawn the Widget objects for this tile type */
     for (let i = 0; i < this.size; i++) {
@@ -86,16 +85,30 @@ export const TileButLedComponents = {
 
 /* Concrete classes for LedButton type */
 export class TileLedButton12 extends TileLedButton {
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client) {
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client, hubId: string) {
     /*the only concretization done here is in the size of the board type.*/
-    super(evtSubject, chainId, boardType, Tile.LEDBUTTON12, tileIndex, 12, client);
-    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.LEDBUTTON12 + ',tileIndex=' + tileIndex, '');
+    super(evtSubject, chainId, boardType, Tile.LEDBUTTON12, tileIndex, 12, client, hubId);
   }
+
+  init = () => {
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.LEDBUTTON12 + ',tileIndex=' + this.tileIndex(), '', this.hubId);
+  };
+
+  exit = () => {
+    registry.unRegisterObject(this.objectHandle);
+  };
 }
 
 export class TileLedButton8 extends TileLedButton {
-  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client) {
-    super(evtSubject, chainId, boardType, Tile.LEDBUTTON8, tileIndex, 8, client);
-    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.LEDBUTTON8 + ',tileIndex=' + tileIndex, '');
+  constructor(evtSubject: any, chainId: string, boardType: BoardType, tileIndex: number, client: Client, hubId: string) {
+    super(evtSubject, chainId, boardType, Tile.LEDBUTTON8, tileIndex, 8, client, hubId);
   }
+
+  init = () => {
+    this.objectHandle = registry.registerObject(this, 'tileType=' + Tile.LEDBUTTON8 + ',tileIndex=' + this.tileIndex(), '', this.hubId);
+  };
+
+  exit = () => {
+    registry.unRegisterObject(this.objectHandle);
+  };
 }

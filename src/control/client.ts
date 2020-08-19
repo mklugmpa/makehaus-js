@@ -143,16 +143,17 @@ export class Client extends EventEmitter {
     this.packetizer = new Packetizer(this);
     this.depacketizer = new Depacketizer(this);
     const self = this;
-    /* this socket is used to communicate with the tiles hub server. Not to be confused with the socket makehaus
-     * will create towards the MakeHaus Web UI */
-    this.socket = net.Socket();
+    this.socket;
   }
 
   /* pass a host ip and port to initiate a socket connection to the tiles hub server
    * the socket registers event listeners to the hub here *
    * use nodejs events to communicate the internal state of the client socket to upper application layer */
-  start(addr_host: string, addr_port: number) {
+  init(addr_host: string, addr_port: number) {
     const self = this;
+    /* this socket is used to communicate with the tiles hub server. Not to be confused with the socket makehaus
+     * will create towards the MakeHaus Web UI */
+    this.socket = new net.Socket();
     this.socket.on('data', (data: any) => self.packetizer.recv(data));
     this.socket.on('error', (e: any) => this.emit('error', e));
     this.socket.on('connect', () => {
@@ -164,12 +165,15 @@ export class Client extends EventEmitter {
     });
     this.connect(addr_host, addr_port);
   }
+
   connect(addr_host: string, addr_port: number) {
     this.socket.connect(addr_port, addr_host);
   }
-  stop() {
+  
+  exit() {
     this.socket.removeAllListeners();
     this.socket.destroy();
+    delete this.socket;
   }
 
   send(json: any) {

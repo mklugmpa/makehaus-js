@@ -14,10 +14,18 @@ import { TileFader4 } from './api-fader';
 import { TileTextLcdDisplayDual } from './api-textlcddisplay';
 import { Stacks } from '../stack/stacks';
 import { StackBase } from '../stack/stack';
+import { registry } from '../registry/registry';
 
 export class Hub extends EventEmitter {
   /* Create a Stream where the type of messages we will be handling is of type ControlEvent */
   private subject = new ReplaySubject<ControlEvent>();
+
+  constructor(host: string, port: number) {
+    super();
+    if (host != '') {
+      this.objectHandle = registry.registerObject(this, 'host=' + host + ',port=' + port, '', '');
+    }
+  }
 
   /* The TileBase class is the abstract base class for all Tile types. */
   private tiles: TileBase<TCWidget>[] = [];
@@ -27,10 +35,8 @@ export class Hub extends EventEmitter {
   private port: number = 0;
   private firstDisconnectError: boolean = true;
   isConnected: boolean = false;
-
-  constructor() {
-    super();
-  }
+  private hubId: string = '';
+  private objectHandle: string = '';
 
   private dataCallback = (json: any) => {
     let what;
@@ -40,10 +46,12 @@ export class Hub extends EventEmitter {
       if (this.inited === true) {
         /* Check whether the hub proxy has already been inited and avoid reinitialization */
         console.log('Tile Chain was reconnected to hub. Avoiding reinitialization');
+        /*
         Stacks.getAll().forEach((stack) => {
           const stackbase = stack as StackBase;
           stackbase.sync();
         });
+        */
         return;
       }
 
@@ -58,22 +66,22 @@ export class Hub extends EventEmitter {
       what.board_infos.forEach((boardInfo) => {
         switch (boardInfo.board_type) {
           case BoardType.TILEBUTLED12:
-            tile = new TileLedButton12(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client);
+            tile = new TileLedButton12(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client, this.hubId);
             break;
           case BoardType.TILEBUTLED8:
-            tile = new TileLedButton8(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client);
+            tile = new TileLedButton8(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client, this.hubId);
             break;
           case BoardType.TILEENCODER12:
-            tile = new TileEncoder12(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client);
+            tile = new TileEncoder12(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client, this.hubId);
             break;
           case BoardType.TILEENCODER8:
-            tile = new TileEncoder8(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client);
+            tile = new TileEncoder8(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client, this.hubId);
             break;
           case BoardType.TILEFADER4:
-            tile = new TileFader4(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client);
+            tile = new TileFader4(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client, this.hubId);
             break;
           case BoardType.TILETEXTLCDDUALDISPLAY:
-            tile = new TileTextLcdDisplayDual(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client);
+            tile = new TileTextLcdDisplayDual(this.subject, what.chain_id, boardInfo.board_type, boardInfo.board_idx, this.client, this.hubId);
             break;
           default:
             break;
@@ -81,6 +89,7 @@ export class Hub extends EventEmitter {
 
         /* cache the tile and forward the information that a new tile was discovered via events */
         if (tile) {
+          tile.init();
           this.tiles.push(tile);
           this.emit(tile.tileType().toString(), tile);
         }
@@ -100,7 +109,7 @@ export class Hub extends EventEmitter {
     /* Start listening to the client for events. */
     this.host = host;
     this.port = port;
-    this.client.start(host, port);
+    this.client.init(host, port);
 
     /* Register event handlers for different event types on the server. */
     this.client.on('error', this.handleError);
@@ -127,6 +136,7 @@ export class Hub extends EventEmitter {
   handleConnect = () => {
     console.log('TilesHub at ' + this.host + ':' + this.port + ' connected');
     this.firstDisconnectError = true;
+    this.hubId = this.host + ':' + this.port;
   };
 
   handleClose = (e: any) => {
@@ -146,12 +156,28 @@ export class Hub extends EventEmitter {
     this.client.connect(this.host, this.port);
   };
 
-  close = () => {
-    /* Remove all listeners */
+  exit = (finalExit: boolean) => {
+    console.log('HUB ' + this.hubId + ' CLOSING');
+    // all Tiles exit
+    this.tiles.forEach((tile) => {
+      tile.exit();
+    });
+
+    // delete all Tiles
+    this.tiles.length = 0;
+
+    // Remove all listeners
     this.client.removeAllListeners();
 
-    /* Stop listening to the client for events. */
-    this.client.stop();
+    // Stop listening to the client for events.
+    this.client.exit();
+
+    if (finalExit) {
+      delete this.client;
+      registry.unRegisterObject(this.objectHandle);
+    }
+
+    console.log('HUB ' + this.hubId + ' CLOSED');
   };
 }
 
@@ -161,5 +187,5 @@ export const MessageType = {
   EVENT: 'event',
 };
 
-export const hub: Hub = new Hub();
+export const hub: Hub = new Hub('', 0);
 Object.seal(hub);
